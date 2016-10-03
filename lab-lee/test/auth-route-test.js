@@ -3,11 +3,11 @@
 // npm modules
 const expect = require('chai').expect;
 const request = require('superagent');
-const Promise = require('bluebird');
-const User = require('../model/user');
+// const Promise = require('bluebird');
 
 // app modules
-const server = require('../server.js');
+const User = require('../model/user');
+
 
 // module constants
 const url = `http://localhost:${process.env.PORT}`;
@@ -17,6 +17,9 @@ const exampleUser = {
   password: '12345',
   email: 'blerpderp@blerp.com',
 };
+
+// starting the server
+require('../server.js');
 
 describe('testing auth-router', function() {
 
@@ -59,6 +62,7 @@ describe('testing auth-router', function() {
       });
     });
   });
+
   describe('testing GET /api/login', function() {
 
     describe('with valid body', function() {
@@ -114,7 +118,6 @@ describe('testing auth-router', function() {
         request.get(`${url}/api/login`)
         .auth('badguy', '99999')
         .end((err, res) => {
-          if(err) return done(err);
           expect(res.status).to.equal(401);
           done();
         });
