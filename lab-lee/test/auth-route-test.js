@@ -119,7 +119,7 @@ describe('testing auth-router', function() {
 
       it('should not authenticate', done => {
         request.get(`${url}/api/login`)
-        .auth('badguy', '99999')
+        .auth('steveguy', '99999')
         .end((err, res) => {
           expect(res.status).to.equal(401);
           done();
