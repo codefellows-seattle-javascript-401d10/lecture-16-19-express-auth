@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const createError = require('http-errors');
-const debug = require('debug')('slugram:user');
+const debug = require('debug')('catgram:user');
 
 // mondule constant
 const Schema = mongoose.Schema;

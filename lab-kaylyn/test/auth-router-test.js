@@ -11,9 +11,9 @@ mongoose.Promise = Promise;
 const server = require('../server.js');
 const url = `http://localhost:${process.env.PORT}`;
 const exampleUser = {
-  username: 'slug',
+  username: 'pudge',
   password: '1234',
-  email: 'slug@slug.slime',
+  email: 'pudge@pudge.life',
 };
 
 describe('testing auth-router', function(){
@@ -60,7 +60,7 @@ describe('testing auth-router', function(){
 
       it('should return a token', (done) => {
         request.get(`${url}/api/login`)
-        .auth('slug', '1234')
+        .auth('pudge', '1234')
         .end((err, res) => {
           if (err) return done(err);
           console.log('res.text', res.text);
