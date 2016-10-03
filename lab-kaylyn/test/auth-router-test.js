@@ -37,6 +37,16 @@ describe('testing auth-router', function(){
         });
       });
     });
+    describe('testing invalid POST requests /api/signup', function(){
+      it('should return a 400 status code for bad request', (done) => {
+        request.post(`${url}/api/signup`)
+        .send({username: 666, password: '', email:''})
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
   });
 
   describe('testing GET /api/signup', function(){
