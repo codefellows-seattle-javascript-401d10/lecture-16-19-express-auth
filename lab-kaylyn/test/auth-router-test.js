@@ -36,14 +36,14 @@ describe('testing auth-router', function(){
           done();
         });
       });
-    });
-    describe('testing invalid POST requests /api/signup', function(){
-      it('should return a 400 status code for bad request', (done) => {
-        request.post(`${url}/api/signup`)
-        .send({username: 666, password: '', email:''})
-        .end((err, res) => {
-          expect(res.status).to.equal(400);
-          done();
+      describe('testing invalid POST requests /api/signup', () => {
+        it('should return a 400 status code for bad request', (done) => {
+          request.post(`${url}/api/signup`)
+          .send({username: 666, password: '', email:''})
+          .end((err, res) => {
+            expect(res.status).to.equal(400);
+            done();
+          });
         });
       });
     });
@@ -77,6 +77,16 @@ describe('testing auth-router', function(){
           expect(res.status).to.equal(200);
           expect(!!res.text).to.equal(true);
           done();
+        });
+      });
+      describe('testing invalid GET requests /api/signup', () => {
+        it('should return 401 status code if users cannot be authenticated', (done) => {
+          request.get(`${url}/api/login`)
+          .auth('pudge', '666')
+          .end((err, res) => {
+            expect(res.status).to.equal(401);
+            done();
+          });
         });
       });
     });
