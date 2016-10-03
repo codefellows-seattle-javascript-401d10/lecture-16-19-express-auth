@@ -28,7 +28,7 @@ const app = express();
 
 app.use(cors());
 app.use(morgan('dev'));
-app.user(authRouther);
+app.use(authRouther);
 app.use(errorMiddleware);
 app.use(basicErrorMiddleware);
 

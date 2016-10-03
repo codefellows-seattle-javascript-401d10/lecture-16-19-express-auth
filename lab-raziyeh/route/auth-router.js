@@ -12,15 +12,14 @@ const authRouter = module.exports = Router();
 
 authRouter.post('/api/signup', jsonParser, function(req, res, next){
   debug('POST /api/signup');
-  console.log(req.body);
   let password = req.body.password;
-  console.log('password', password);
 
   delete req.body.password;
   let user = new User(req.body);
-  
+
+  // check for unique username with mongoose unique
   user.generatePasswordHash(password)
-  .then( user => user.save()) // check for unique username with mongoose unique
+  .then( user => user.save()) 
   .then( user => user.generateToken())
   .then( token => res.send(token))
   .catch(next);

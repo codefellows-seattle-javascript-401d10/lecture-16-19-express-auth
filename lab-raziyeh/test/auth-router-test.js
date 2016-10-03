@@ -1,37 +1,93 @@
 'use strict';
 
-const Router = require('express').Router;
-const jsonParser = require('body-parser').json();
-const debug = require('debug')('slugram:auth-router');
-const basicAuth = require('../lib/basic-auth-middleware.js');
-
+const expect = require('chai').expect;
+const request = require('superagent');
+const Promise = require('bluebird');
+const mongoose = require('mongoose');
 const User = require('../model/user.js');
+const debug = require('debug')('slug:test');
 
-// module constants
-const authRouter = module.exports = Router();
+mongoose.Promise = Promise;
 
-authRouter.post('/api/signup', jsonParser, function(req, res, next){
-  debug('POST /api/signup');
-  console.log(req.body);
-  let password = req.body.password;
-  console.log('password', password);
+const server = require('../server.js');
+const url = `http://localhost:${process.env.PORT}`;
+const exampleUser = {
+  username: 'slug',
+  password: '1234',
+  email: 'slug@slug.slime',
+};
 
-  delete req.body.password;
-  let user = new User(req.body);
-  
-  user.generatePasswordHash(password)
-  .then( user => user.save()) // check for unique username with mongoose unique
-  .then( user => user.generateToken())
-  .then( token => res.send(token))
-  .catch(next);
+describe('Testing running Server', function() {
+  before((done) => {
+    if (! server.isRunning) {
+      server.listen(process.env.PORT, () => {
+        server.isRunning = true;
+        debug(`server up ::: ${process.env.PORT}`);
+        done();
+      });
+      return;
+    }
+    done();
+  });
+
+  it('expect  to show server is running on: ', () => {
+    expect(server.isRunning).to.be.true;
+  });
 });
 
-authRouter.get('/api/login', basicAuth, function(req, res, next){
-  debug('GET /api/login');
+describe('testing auth-router', function(){
 
-  User.findOne({username: req.auth.username})
-  .then( user => user.comparePasswordHash(req.auth.password))
-  .then( user => user.generateToken())
-  .then( token => res.send(token))
-  .catch(next);
+  describe('testing POST /api/signup', function(){
+    describe('with valid body', function(){
+      after( done => {
+        User.remove({})
+        .then( () => done())
+        .catch(done);
+      });
+
+      it('should return a token', (done) => {
+        request.post(`${url}/api/signup`)
+        .send(exampleUser)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(!!res.text).to.equal(true);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('testing GET /api/signup', function(){
+    describe('with valid body', function(){
+      before( done => {
+        var user  =  new User(exampleUser);
+        user.generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempuser = user;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        User.remove({})
+        .then( () => done())
+        .catch(done);
+      });
+
+      it('should return a token', (done) => {
+        request.get(`${url}/api/login`)
+        .auth('slug', '1234')
+        .end((err, res) => {
+          if (err) return done(err);
+          console.log('res.text', res.text);
+          expect(res.status).to.equal(200);
+          expect(!!res.text).to.equal(true);
+          done();
+        });
+      });
+    });
+  });
 });

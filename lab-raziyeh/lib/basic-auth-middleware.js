@@ -15,7 +15,7 @@ module.exports = function( req, res, next) {
     return next(createError(301, 'require username and password'));
 
   let utf8String = new Buffer(base64String, 'base64').toString();
-  let authArray = utf8String.aplit(':');
+  let authArray = utf8String.split(':');
   req.auth = {
     username: authArray[0],
     password: authArray[1],
