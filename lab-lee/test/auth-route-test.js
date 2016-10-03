@@ -8,6 +8,8 @@ const request = require('superagent');
 // app modules
 const User = require('../model/user');
 
+// starting the server
+require('../server.js');
 
 // module constants
 const url = `http://localhost:${process.env.PORT}`;
@@ -18,8 +20,7 @@ const exampleUser = {
   email: 'blerpderp@blerp.com',
 };
 
-// starting the server
-require('../server.js');
+
 
 describe('testing auth-router', function() {
 
@@ -37,6 +38,7 @@ describe('testing auth-router', function() {
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err, res) => {
+          if(err) return done(err);
           expect(res.status).to.equal(200);
           expect(!!res.text).to.equal(true);
           done();
@@ -54,6 +56,7 @@ describe('testing auth-router', function() {
 
       it('should return a 400 error', done => {
         request.post(`${url}/api/signup`)
+        .set('Content-Type', 'application/json')
         .send('crap')
         .end((err, res) => {
           expect(res.status).to.equal(400);
