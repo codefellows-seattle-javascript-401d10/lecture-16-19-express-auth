@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "DEBUG='leeram*' ./node_modules/mocha/bin/mocha",
-    "start": "DEBUG='leeram*' node server.js"
+    "test": "DEBUG='leegram*' ./node_modules/mocha/bin/mocha",
+    "start": "DEBUG='leegram*' node server.js"
   },
   "keywords": [],
   "author": "broxsonl@gmail.com",

@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const express = require('express');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
-const debug = require('debug')('leeram:server');
+const debug = require('debug')('leegram:server');
 
 // app modules
 const errorMiddleware = require('./lib/error-middleware');
