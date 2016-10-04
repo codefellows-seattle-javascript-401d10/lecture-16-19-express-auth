@@ -1,40 +1,40 @@
-'use strict';
+'use strict'; //We turn on use strict to get better warnings
 
 // npm modules
-const cors = require('cors');
-const dotenv = require('dotenv');
-const morgan = require('morgan');
-const express = require('express');
-const mongoose = require('mongoose');
-const Promise = require('bluebird');
-const debug = require('debug')('leegram:server');
+const cors = require('cors'); //express middleware lets us cross side scripting
+const dotenv = require('dotenv'); //
+const morgan = require('morgan'); //logging middleware. Logs info about route.
+const express = require('express'); //server framework
+const mongoose = require('mongoose'); //ORM for owrking with MongoDB
+// const Promise = require('bluebird'); //Promises. Specifically to use w/ mongoose
+const debug = require('debug')('leegram:server'); //logging tool
 
 // app modules
-const errorMiddleware = require('./lib/error-middleware');
-const authRouter = require('./route/auth-router');
+const errorMiddleware = require('./lib/error-middleware'); //error routes
+const authRouter = require('./route/auth-router'); //auth routes
 
 // load env vars
-dotenv.load();
+dotenv.load(); //look in current directory for .env and adds to process.env
 
 // setup mongoose
-mongoose.Promise = Promise;
+// mongoose.Promise = Promise; //
 mongoose.connect(process.env.MONGODB_URI);
 
 //module constants
-const PORT = process.env.PORT;
-const app = express();
+const PORT = process.env.PORT; //setting PORT to what's on the env
+const app = express(); //using express factory method to instantiate an instance of express. Factory = returns instance of a constructor
 
 // app middleware
-app.use(cors());
-app.use(morgan('dev'));
+app.use(cors()); //telling the app to use cors to do cross-side scripting
+app.use(morgan('dev')); //telling the app to use morgan middleware
 
 // app routes
-app.use(authRouter);
-app.use(errorMiddleware);
+app.use(authRouter); //telling the app to use the auth router
+app.use(errorMiddleware); // telling the app to use our error middleware
 
 // start server
 const server = module.exports = app.listen(PORT, function() {
   debug(`server started on ${PORT}`);
 });
 
-server.isRunning = true;
+server.isRunning = true; //a test to check if the server is running

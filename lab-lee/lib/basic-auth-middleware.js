@@ -1,4 +1,4 @@
-'use strict';
+'use strict'; 
 
 const createError = require('http-errors');
 const debug = require('debug')('leegram:basic-auth-middleware');
