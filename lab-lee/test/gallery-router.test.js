@@ -271,7 +271,7 @@ describe('Testing /api/gallery routes', function() {
 
     it('invalid id, so should return not found and status 404', done => {
 
-      request.put(`${url}/api/gallery/`)
+      request.put(`${url}/api/gallery/bad`)
       .send(exampleGallery)
       .set({
         'Authorization': `Bearer ${this.tempToken}`,

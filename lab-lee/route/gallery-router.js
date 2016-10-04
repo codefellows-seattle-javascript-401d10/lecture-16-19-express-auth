@@ -33,3 +33,13 @@ galleryRouter.get('/api/gallery/:id', bearerAuth, function(req, res, next) {
   })
   .catch(next);
 });
+
+galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req, res, next) {
+  debug('hit route PUT /api/gallery/:id');
+  Gallery.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  .then(gallery => res.json(gallery))
+  .catch(err => {
+    if (err.name === 'ValidationError') return next(err);
+    next(createError(404, err.message));
+  });
+});
