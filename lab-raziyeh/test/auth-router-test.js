@@ -36,7 +36,6 @@ describe('Testing running Server', function() {
 });
 
 describe('testing auth-router', function(){
-
   describe('testing POST /api/signup', function(){
     describe('with valid body', function(){
       after( done => {

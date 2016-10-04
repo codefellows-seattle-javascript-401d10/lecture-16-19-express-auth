@@ -45,7 +45,7 @@ userSchema.methods.comparePasswordHash = function(password){
   });
 };
 
-// for signup 
+// for signup  - it's generate a random string for token
 userSchema.methods.generateFindHash = function(){
   debug('generateFindHash');
   return new Promise((resolve, reject) => {

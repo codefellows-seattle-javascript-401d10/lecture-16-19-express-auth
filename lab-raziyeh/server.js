@@ -26,8 +26,11 @@ mongoose.connect(process.env.MONGODB_URI);
 const PORT = process.env.PORT;
 const app = express();
 
+//app middleware
 app.use(cors());
 app.use(morgan('dev'));
+
+//app routes
 app.use(authRouther);
 app.use(errorMiddleware);
 app.use(basicErrorMiddleware);
