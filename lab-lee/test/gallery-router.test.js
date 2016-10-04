@@ -111,7 +111,7 @@ describe('Testing /api/gallery routes', function() {
       });
     });
 
-    it('no body, so should return unauthorized and status 400', done => {
+    it('no body, so should return bad request and status 400', done => {
       request.post(`${url}/api/gallery`)
       .set('Content-Type', 'application/json')
       .send('notjson')
@@ -159,15 +159,6 @@ describe('Testing /api/gallery routes', function() {
     it('no token, so should return unauthorized and status 401', done => {
 
       request.get(`${url}/api/gallery/${this.tempGallery._id}`)
-      .end((err, res) => {
-        expect(res.status).to.equal(401);
-        done();
-      });
-    });
-
-    it('should return a gallery and status 200', done => {
-
-      request.get(`${url}/api/gallery/${this.tempGallery._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`,
       })
@@ -182,5 +173,25 @@ describe('Testing /api/gallery routes', function() {
       });
     });
 
+    it('no token, so should return unauthorized and status 401', done => {
+
+      request.get(`${url}/api/gallery/${this.tempGallery._id}`)
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+
+    it('no body, so should return bad request and status 404', done => {
+
+      request.get(`${url}/api/gallery/`)
+      .set({
+        'Authorization': `Bearer ${this.tempToken}`,
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
   });
 });
