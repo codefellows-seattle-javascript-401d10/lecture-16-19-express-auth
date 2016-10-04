@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const Router = require('express').Router;
 const jsonParser = require('body-parser').json();
@@ -12,10 +12,8 @@ const authRouter = module.exports = Router();
 
 authRouter.post('/api/signup', jsonParser, function(req, res, next){
   debug('POST /api/signup');
-  console.log(req.body);
-  let password = req.body.password;
-  console.log('password', password);
 
+  let password = req.body.password;
   delete req.body.password;
   let user = new User(req.body);
 
@@ -26,6 +24,7 @@ authRouter.post('/api/signup', jsonParser, function(req, res, next){
   .catch(next);
 });
 
+// basicAuth takes the base64 string and encodes it in utf8 and splits it on the :
 authRouter.get('/api/login', basicAuth, function(req, res, next){
   debug('GET /api/login');
 

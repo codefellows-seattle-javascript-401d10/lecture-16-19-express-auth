@@ -17,6 +17,33 @@ const exampleUser = {
 };
 
 describe('testing auth-router', function(){
+
+  before( done => {
+    if(!server.isRunning){
+      server.listen(process.env.PORT, () => {
+        server.isRunning = true;
+        console.log('server up');
+        done();
+      });
+      return;
+    }
+    done();
+  });
+
+  //when all the tests are done, kill server
+  after(done => {
+    if(server.isRunning){
+      server.close(err => {
+        if(err) return done(err);
+        server.isRunning = false;
+        console.log('server down');
+        done();
+      });
+      return;
+    }
+    done();
+  });
+
   describe('testing POST /api/signup', function(){
     describe('with valid body', function(){
       after( done => {
@@ -51,7 +78,7 @@ describe('testing auth-router', function(){
   describe('testing GET /api/signup', function(){
     describe('with valid body', function(){
       before( done => {
-        let user  =  new User(exampleUser);
+        let user  =  new User(exampleUser); // mocks
         user.generatePasswordHash(exampleUser.password)
         .then(user => user.save())
         .then(user => {

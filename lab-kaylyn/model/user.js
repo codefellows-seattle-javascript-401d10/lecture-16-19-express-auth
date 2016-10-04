@@ -2,8 +2,8 @@
 
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const Promise = require('bluebird');
+const jwt = require('jsonwebtoken'); //lib for encrypting and decrypting JS objects
+const Promise = require('bluebird'); //Promise library
 const mongoose = require('mongoose');
 const createError = require('http-errors');
 const debug = require('debug')('catgram:user');
@@ -11,6 +11,7 @@ const debug = require('debug')('catgram:user');
 // mondule constant
 const Schema = mongoose.Schema;
 
+//declaring a schema for a user
 const userSchema = Schema({
   username: {type: String, required: true, unique: true},
   email: {type: String, required: true, unique: true},
@@ -19,7 +20,7 @@ const userSchema = Schema({
 });
 
 
-// for signUP
+// for signUP, happens every time a user is created 
 // store a password that has been encrypted as a hash
 userSchema.methods.generatePasswordHash = function(password){
   debug('generatePasswordHash');
