@@ -7,11 +7,12 @@ const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
-const debug = require('debug')('meeksgram:server');
+const debug = require('debug')('meekslib:server');
 
 // app modules
 const errorMiddleware = require('./lib/error-middleware.js');
 const authRouter = require('./route/auth-router.js');
+const libraryRouter = require('./route/library-router.js');
 // load env vars (environment variables)
 dotenv.load();
 
@@ -27,6 +28,7 @@ app.use(cors());
 app.use(morgan('dev'));
 // app routes
 app.use(authRouter);
+app.use(libraryRouter);
 app.use(errorMiddleware);
 
 // start server

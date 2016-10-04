@@ -1,7 +1,7 @@
 'use strict';
 
 const createError = require('http-errors');
-const debug = require('debug')('meeksgram:basic-auth-middleware');
+const debug = require('debug')('meekslib:basic-auth-middleware');
 
 module.exports = function(req, res, next){
   debug();

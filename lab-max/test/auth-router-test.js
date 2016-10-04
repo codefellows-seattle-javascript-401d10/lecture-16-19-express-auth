@@ -6,8 +6,7 @@ const User = require('../model/user.js');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const server = require('../server.js');
-const debug = require('debug')('meeksgram:auth-router-test');
-const PORT = process.env.PORT || 3000;
+const debug = require('debug')('meekslib:auth-router-test');
 
 mongoose.promise = Promise;
 
@@ -22,12 +21,12 @@ const exampleUser = {
 
 describe('testing auth-router', function(){
 
-  before((done) => {
-    debug('before module store-router-test');
-    if (! server.isRunning) {
-      server.listen(PORT, () => {
+  before(done => {
+    debug('before module auth-router-test');
+    if (!server.isRunning) {
+      server.listen(process.env.PORT, () => {
         server.isRunning = true;
-        debug(`server up ::: ${PORT}`);
+        debug('server up');
         done();
       });
       return;
@@ -35,8 +34,8 @@ describe('testing auth-router', function(){
     done();
   });
 
-  after((done) => {
-    debug('after module store-router-test');
+  after(done => {
+    debug('after module auth-router-test');
     if (server.isRunning) {
       server.close(() => {
         server.isRunning = false;
@@ -46,6 +45,16 @@ describe('testing auth-router', function(){
       return;
     }
     done();
+  });
+
+  describe('testing unregistered route', function(){
+    it('should return a 404 error for unregistered route', done => {
+      request.get(`${url}/api/pizza`)
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
   });
 
   describe('testing POST /api/signup', function(){
@@ -88,17 +97,14 @@ describe('testing auth-router', function(){
     });
   });
 
-  describe('testing GET /api/signup', function(){
+  describe('testing GET /api/login', function(){
     describe('with valid body', function(){
 
       before( done => {
         let user = new User(exampleUser);
         user.generatePasswordHash(exampleUser.password)
         .then(user => user.save())
-        .then(user => {
-          this.tempUser = user;
-          done();
-        })
+        .then( () => done())
         .catch(done);
       });
 

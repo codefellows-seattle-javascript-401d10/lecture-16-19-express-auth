@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const crypto = require('crypto');
 const createError = require('http-errors');
-const debug = require('debug')('meeksgram:user');
+const debug = require('debug')('meekslib:user');
 
 const Schema = mongoose.Schema;
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const Router = require('express').Router;
-const debug = require('debug')('meeksgram:auth-router');
+const debug = require('debug')('meekslib:auth-router');
 const jsonParser = require('body-parser').json();
 const basicAuth = require('../lib/basic-auth-middleware.js');
 
