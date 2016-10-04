@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "DEBUG='auth*' ./node_modules/mocha/bin/mocha",
-    "start": "DEBUG='auth*' node server.js"
+    "test": "DEBUG='TastyToast*' ./node_modules/mocha/bin/mocha",
+    "start": "DEBUG='TastyToast*' node server.js"
   },
   "keywords": [],
   "author": "",

@@ -1,7 +1,7 @@
 'use strict';
 
 const createError = require('http-errors');
-const debug = require('debug')('auth:basic-auth-middleware');
+const debug = require('debug')('TastyToast:basic-auth-middleware');
 
 module.exports = function(req, res, next){
   debug();
