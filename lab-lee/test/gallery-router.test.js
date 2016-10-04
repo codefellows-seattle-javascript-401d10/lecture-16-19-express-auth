@@ -110,6 +110,19 @@ describe('Testing /api/gallery routes', function() {
         done();
       });
     });
+
+    it('no body, so should return unauthorized and status 400', done => {
+      request.post(`${url}/api/gallery`)
+      .set('Content-Type', 'application/json')
+      .send('notjson')
+      .set({
+        'Authorization': `Bearer ${this.tempToken}`,
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(400);
+        done();
+      });
+    });
   });
 
   describe('testing GET to /api/gallery:id', () => {
