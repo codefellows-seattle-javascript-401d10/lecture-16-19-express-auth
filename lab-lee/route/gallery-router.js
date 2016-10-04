@@ -29,7 +29,10 @@ galleryRouter.get('/api/gallery/:id', bearerAuth, function(req, res, next) {
       return next(createError(401, 'invalid userid'));
     res.json(gallery);
   })
-  .catch(next);
+  .catch( err => {
+    if (err.name === 'ValidationError') return next(err);
+    next(createError(404, err.message));
+  });
 });
 
 galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req, res, next) {
@@ -45,6 +48,16 @@ galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req, res,
 galleryRouter.delete('/api/gallery/:id', bearerAuth, function(req, res, next) {
   debug('hit route DELETE /api/gallery/:id');
   Gallery.findByIdAndRemove(req.params.id)
-  .then ( () => res.sendStatus(204))
+  .then( () => res.sendStatus(204))
   .catch( err => next(createError(404, err.message)));
+});
+
+galleryRouter.get('/api/gallery', bearerAuth, jsonParser, function(req, res, next) {
+  debug('hit route GET /api/gallery');
+  Gallery.find()
+  .then( galleries => res.json(galleries))
+  .catch( err => {
+    if (err.name === 'ValidationError') return next(err);
+    next(createError(404, err.message));
+  });
 });

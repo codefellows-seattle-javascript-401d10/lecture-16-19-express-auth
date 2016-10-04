@@ -20,6 +20,12 @@ const exampleUser = {
   password: '1234',
   email: 'blerpderp@blerp.com',
 };
+//Second example to ensure array is coming back in bonus.
+const exampleUser2 = {
+  username: 'robguy',
+  password: '12345',
+  email: 'blerpderpy@blerp.com',
+};
 
 const exampleGallery = {
   name: 'cool time party',
@@ -186,7 +192,7 @@ describe('Testing /api/gallery routes', function() {
 
     it('invalid id, so should return not found and status 404', done => {
 
-      request.get(`${url}/api/gallery/`)
+      request.get(`${url}/api/gallery/badfile `)
       .set({
         'Authorization': `Bearer ${this.tempToken}`,
       })
@@ -347,5 +353,135 @@ describe('Testing /api/gallery routes', function() {
         done();
       });
     });
+  });
+  describe('testing POST to /api/gallery', () => {
+
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    it('should return a gallery and status 200', done => {
+
+      request.post(`${url}/api/gallery`)
+      .send(exampleGallery)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`,
+      })
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).to.equal(200);
+        expect(res.body.name).to.equal(exampleGallery.name);
+        expect(res.body.desc).to.equal(exampleGallery.desc);
+        expect(res.body.userID).to.equal(this.tempUser._id.toString());
+        let date = new Date(res.body.created).toString();
+        expect(date).to.not.equal('Invalid Date');
+        done();
+      });
+    });
+
+    it('no token, so should return unauthorized and status 401', done => {
+      request.post(`${url}/api/gallery`)
+      .send(exampleGallery)
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+
+    it('no body, so should return bad request and status 400', done => {
+      request.post(`${url}/api/gallery`)
+      .set('Content-Type', 'application/json')
+      .send('notjson')
+      .set({
+        'Authorization': `Bearer ${this.tempToken}`,
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(400);
+        done();
+      });
+    });
+  });
+
+  describe('testing GET to /api/gallery', () => {
+
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleGallery.userID = this.tempUser._id.toString();
+      new Gallery(exampleGallery).save()
+      .then( gallery => {
+        this.tempGallery = gallery;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      new User(exampleUser2)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleGallery.userID = this.tempUser._id.toString();
+      new Gallery(exampleGallery).save()
+      .then( gallery => {
+        this.tempGallery = gallery;
+        done();
+      })
+      .catch(done);
+    });
+
+    after(() => {
+      delete exampleGallery.userID;
+    });
+
+    it('valid token, so should return array of galleries and status 200', done => {
+
+      request.get(`${url}/api/gallery`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`,
+      })
+      .end((err, res) => {
+        debug('res.body', res.body);
+        if (err) return done(err);
+        expect(res.status).to.equal(200);
+        done();
+      });
+    });
+
   });
 });
