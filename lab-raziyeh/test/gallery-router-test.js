@@ -242,7 +242,6 @@ describe('test /api/gallery', function(){
 
     describe('Testing DELETE /api/gallery/:id  with valid id', () => {
       it('should DELETE a gallery with valid id', done => {
-        console.log('this.tempGallery', this.tempGallery);
         request.delete(`${url}/api/gallery/${this.tempGallery._id}`)
         .set({
           Authorization: `Bearer ${this.tempToken}`,
@@ -250,6 +249,52 @@ describe('test /api/gallery', function(){
         .end((err, res) => {
           if (err) return done(err);
           expect(res.status).to.equal(204);
+          expect(err).to.be.null;
+          done();
+        });
+      });
+    });
+  }); 
+
+  describe('testing PUT to /api/gallery/:id', () => {
+    
+    before(done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleGallery.userID = this.tempUser._id.toString();
+      new Gallery(exampleGallery).save()
+      .then( gallery => {
+        this.tempGallery = gallery;
+        done();
+      })
+      .catch(done);
+    });
+
+    describe('Testing PUT /api/gallery/:id  with valid id', () => {
+      it('should PUT a gallery with valid id', done => {
+        request.put(`${url}/api/gallery/${this.tempGallery._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`,
+        })
+        .send({name:'rozi', desc:'hey I am updated'})
+        .end((err, res) => {
+          console.log('------------------>',res);
+          if(err) done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.name).to.equal('rozi');
           expect(err).to.be.null;
           done();
         });
