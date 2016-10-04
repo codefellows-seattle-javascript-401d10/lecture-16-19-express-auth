@@ -282,4 +282,70 @@ describe('Testing /api/gallery routes', function() {
       });
     });
   });
+
+  describe('testing DELETE to /api/gallery:id', () => {
+
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleGallery.userID = this.tempUser._id.toString();
+      new Gallery(exampleGallery).save()
+      .then( gallery => {
+        this.tempGallery = gallery;
+        done();
+      })
+      .catch(done);
+    });
+
+    after(() => {
+      delete exampleGallery.userID;
+    });
+
+    it('valid token, so should delete gallery and status 204', done => {
+
+      request.delete(`${url}/api/gallery/${this.tempGallery._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`,
+      })
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).to.equal(204);
+        done();
+      });
+    });
+
+    it('no token, so should return unauthorized and status 401', done => {
+
+      request.delete(`${url}/api/gallery/${this.tempGallery._id}`)
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+
+    it('invalid id, so should return not found and status 404', done => {
+
+      request.delete(`${url}/api/gallery/`)
+      .set({
+        'Authorization': `Bearer ${this.tempToken}`,
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+  });
 });
