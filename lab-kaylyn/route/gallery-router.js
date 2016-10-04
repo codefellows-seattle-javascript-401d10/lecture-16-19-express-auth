@@ -31,15 +31,16 @@ galleryRouter.get('/api/gallery/:id', bearerAuth, function(req, res, next){
   .catch(err => next(createError(404, err.message)));
 });
 
-galleryRouter.put('/api/gallery/:id'), bearerAuth, jsonParser, function(req, res, next){
+galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req, res, next){
   debug('PUT /api/gallery/:id');
   Gallery.findById(req.params.id)
   .then(gallery => {
     if (gallery.userID.toString() !== req.user._id.toString()) return next(createError(401, 'invalid userid'));
-    Gallery.findByIdAndUpdate(req.params.id, req.body, {new:true});
+    return Gallery.findByIdAndUpdate(req.params.id, req.body, {new:true});
   })
   .then(gallery => {
     res.json(gallery);
+
   })
   .catch(err => next(createError(404, err.message)));
-};
+});

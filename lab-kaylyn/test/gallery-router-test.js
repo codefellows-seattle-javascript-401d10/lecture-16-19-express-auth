@@ -241,6 +241,10 @@ describe('test /api/gallery', function(){
         .catch(done);
       });
 
+      after(() => {
+        delete exampleGallery.userID;
+      });
+
       it('should return a status code of 200', done => {
         let updatedGallery = {
           name: 'updated name',
@@ -254,11 +258,42 @@ describe('test /api/gallery', function(){
         .end((err, res) => {
           if (err)return done(err);
           expect(res.status).to.equal(200);
-          expect(res.body.id).to.equal(updatedGallery._id);
+          expect(res.body.userID).to.equal(this.tempUser._id.toString());
           expect(res.body.name).to.equal(updatedGallery.name);
           expect(res.body.desc).to.equal(updatedGallery.desc);
           this.tempGallery = res.body;
           done();
+        });
+      });
+    });
+    describe('testing invalid PUT request for invalid body', () => {
+      let updatedGallery = ('string');
+      it('should return a status code of 400', done => {
+        request.put(`${url}/api/gallery/${this.tempGallery._id}`)
+        .set('Content-type', 'application/json')
+        .send(updatedGallery)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`,
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+      describe('testing invalid PUT requests for token not found', () => {
+        let updatedGallery = {
+          name: 'updated name',
+          desc:'updated description',
+        };
+        it('should return a status code of 401', done => {
+          request.put(`${url}/api/gallery/${this.tempGallery._id}`)
+          .set('Content-type', 'applications/json')
+          .send(updatedGallery)
+          .set({})
+          .end((err, res) => {
+            expect(res.status).to.equal(401);
+            done();
+          });
         });
       });
     });
