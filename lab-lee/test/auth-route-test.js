@@ -3,13 +3,16 @@
 // npm modules
 const expect = require('chai').expect;
 const request = require('superagent');
-// const Promise = require('bluebird');
+const Promise = require('bluebird');
+const mongoose = require('mongoose');
 
 // app modules
 const User = require('../model/user');
 
+mongoose.Promise = Promise;
+
 // starting the server
-require('../server.js');
+const server = require('../server.js');
 
 // module constants
 const url = `http://localhost:${process.env.PORT}`;
@@ -21,6 +24,33 @@ const exampleUser = {
 };
 
 describe('testing auth-router', function() {
+
+  // Turn server on before tests
+  before(done => {
+    if (!server.isRunning){
+      server.listen(process.env.PORT, () => {
+        server.isRunning = true;
+        console.log('server up');
+        done();
+      });
+      return;
+    }
+    done();
+  });
+
+  // Turn server off before tests
+  after(done => {
+    if (server.isRunning) {
+      server.close(err => {
+        if (err) return done(err);
+        server.isRunning = false;
+        console.log('server down');
+        done();
+      });
+      return;
+    }
+    done();
+  });
 
   describe('testing POST /api/signup', function() {
 
