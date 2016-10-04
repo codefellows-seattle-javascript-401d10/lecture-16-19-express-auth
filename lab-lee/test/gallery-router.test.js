@@ -479,6 +479,7 @@ describe('Testing /api/gallery routes', function() {
         debug('res.body', res.body);
         if (err) return done(err);
         expect(res.status).to.equal(200);
+        expect(res.body.length).to.equal(2);
         done();
       });
     });
