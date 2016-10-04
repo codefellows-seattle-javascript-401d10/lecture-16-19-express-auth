@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "DEBUG=slug* ./node_modules/bin/mocha"
+    "start": "DEBUG='slug*' node server.js"
+    "test": "DEBUG='slug*' ./node_modules/mocha/bin/mocha"
   },
   "keywords": [],
   "author": "",

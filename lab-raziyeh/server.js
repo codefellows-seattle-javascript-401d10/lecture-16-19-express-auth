@@ -14,6 +14,7 @@ const errorMiddleware = require('./lib/error-middleware.js');
 const basicErrorMiddleware = require('./lib/basic-auth-middleware.js');
 
 const authRouther = require('./route/auth-router.js');
+const galleryRouter = require('./route/gallery-router.js');
 
 //load env vars
 dotenv.load();
@@ -32,6 +33,7 @@ app.use(morgan('dev'));
 
 //app routes
 app.use(authRouther);
+app.use(galleryRouter);
 app.use(errorMiddleware);
 app.use(basicErrorMiddleware);
 
