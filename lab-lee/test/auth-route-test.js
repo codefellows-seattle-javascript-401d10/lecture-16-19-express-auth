@@ -20,8 +20,6 @@ const exampleUser = {
   email: 'blerpderp@blerp.com',
 };
 
-
-
 describe('testing auth-router', function() {
 
   describe('testing POST /api/signup', function() {
