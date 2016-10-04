@@ -1,0 +1,30 @@
+{
+  "name": "lab-elizabeth",
+  "version": "1.0.0",
+  "description": "lab-16-19-express-auth",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tenlia/lecture-16-19-express-auth.git"
+  },
+  "author": "tenlia@hotmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Tenlia/lecture-16-19-express-auth/issues"
+  },
+  "homepage": "https://github.com/Tenlia/lecture-16-19-express-auth#readme",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "debug": "^2.2.0",
+    "dotenv": "^2.0.0",
+    "express": "^4.14.0",
+    "http-errors": "^1.5.0",
+    "mongoose": "^4.6.2",
+    "morgan": "^1.7.0"
+  }
+}
