@@ -69,4 +69,4 @@ userSchema.methods.generateToken = function() {
   });
 };
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('user', userSchema); //Has to be done at end. Mongoose freaks if model is created before schema method finishes.
