@@ -14,7 +14,6 @@ const bearerAuth = require('../lib/bearer-auth-middleware.js');
 const galleryRouter = module.exports = Router();
 
 galleryRouter.post('/api/gallery', bearerAuth, jsonParser, function(req, res, next) {
-
   debug('POST /api/gallery');
   req.body.userID = req.user._id;
   new Gallery(req.body).save()
@@ -23,7 +22,6 @@ galleryRouter.post('/api/gallery', bearerAuth, jsonParser, function(req, res, ne
 });
 
 galleryRouter.get('/api/gallery/:id', bearerAuth, function(req, res, next) {
-
   debug('GET /api/gallery/:id');
   Gallery.findById(req.params.id)
   .then( gallery => {
@@ -32,4 +30,21 @@ galleryRouter.get('/api/gallery/:id', bearerAuth, function(req, res, next) {
     res.json(gallery);
   })
   .catch(next);
+});
+
+galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req, res, next) {
+  debug('hit route PUT /api/gallery/:id');
+  Gallery.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  .then( gallery => res.json(gallery))
+  .catch( err => {
+    if (err.name === 'ValidationError') return next(err);
+    next(createError(404, err.message));
+  });
+});
+
+galleryRouter.delete('/api/gallery/:id', bearerAuth, function(req, res, next) {
+  debug('hit route DELETE /api/gallery/:id');
+  Gallery.findByIdAndRemove(req.params.id)
+  .then ( () => res.sendStatus(204))
+  .catch( err => next(createError(404, err.message)));
 });
