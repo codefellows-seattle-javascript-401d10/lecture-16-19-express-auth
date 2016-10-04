@@ -101,6 +101,15 @@ describe('Testing /api/gallery routes', function() {
         done();
       });
     });
+
+    it('no token, so should return unauthorized and status 401', done => {
+      request.post(`${url}/api/gallery`)
+      .send(exampleGallery)
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
   });
 
   describe('testing GET to /api/gallery:id', () => {
