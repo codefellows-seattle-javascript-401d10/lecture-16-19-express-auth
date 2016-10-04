@@ -12,13 +12,13 @@ module.exports = function( req, res, next) {
 
   let base64String = authHeder.split('Basic ')[1];
   if(!base64String)
-    return next(createError(301, 'require username and password'));
+    return next(createError(401, 'require username and password'));
 
   let utf8String = new Buffer(base64String, 'base64').toString();
   let authArray = utf8String.split(':');
   req.auth = {
     username: authArray[0],
-    password: authArray[1],
+    password: authArray[1]
   };
 
   if(!req.auth.username)

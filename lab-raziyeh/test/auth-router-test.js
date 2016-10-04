@@ -14,7 +14,7 @@ const url = `http://localhost:${process.env.PORT}`;
 const exampleUser = {
   username: 'slug',
   password: '1234',
-  email: 'slug@slug.slime',
+  email: 'slug@slug.slime'
 };
 
 describe('Testing running Server', function() {

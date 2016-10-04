@@ -4,7 +4,6 @@ const Router = require('express').Router;
 const jsonParser = require('body-parser').json();
 const debug = require('debug')('slugram:auth-router');
 const basicAuth = require('../lib/basic-auth-middleware.js');
-const createError = require('http-errors');
 const User = require('../model/user.js');
 
 // module constants
@@ -19,10 +18,10 @@ authRouter.post('/api/signup', jsonParser, function(req, res, next){
 
   // check for unique username with mongoose unique
   user.generatePasswordHash(password)
-  .then( user => user.save()) 
+  .then( user => user.save())
   .then( user => user.generateToken())
   .then( token => res.send(token))
-  .catch(err => next(createError(400, err.message)));
+  .catch(next);
 });
 
 authRouter.get('/api/login', basicAuth, function(req, res, next){
