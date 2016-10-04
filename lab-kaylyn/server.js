@@ -11,13 +11,14 @@ const debug = require('debug')('catgram:sever');
 
 // app modules
 const authRouter = require('./route/auth-router.js');
+const galleryRouter = require('./route/gallery-router.js');
 const errorMiddleware = require('./lib/error-middleware.js');
 
 // load env vars
 dotenv.load();
 
 // setup mongoose
-//mongoose.Promise = Promise
+mongoose.Promise = Promise;
 mongoose.connect(process.env.MONGODB_URI);
 
 // module constants
@@ -30,6 +31,7 @@ app.use(morgan('dev'));
 
 // app routes
 app.use(authRouter);
+app.use(galleryRouter);
 app.use(errorMiddleware);
 
 // start server
