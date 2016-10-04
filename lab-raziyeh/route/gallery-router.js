@@ -24,13 +24,28 @@ galleryRouter.post('/api/gallery', bearerAuth, jsonParser, function(req, res, ne
 
 galleryRouter.get('/api/gallery/:id', bearerAuth, function(req, res, next){
   debug('GET /api/gallery/:id');
+
   Gallery.findById(req.params.id)
   .then(gallery => {
-    console.log('userId', gallery.userID);
-    console.log('req.user._id', req.user._id);
     if (gallery.userID.toString() !== req.user._id.toString())
       return next(createError(401, 'invalid userid'));
     res.json(gallery);
   })
   .catch(err => next(createError(404, err.message)));
+});
+
+galleryRouter.delete('/api/gallery/:id', bearerAuth, jsonParser, function(req, res, next){
+  debug('DELETE /api/gallery/:id');
+  console.log('---------------------------->', req.params);
+
+  console.log('req.params.id', req.params.id);
+  Gallery.findById(req.params.id)
+  .then( gallery => {
+    console.log('req.params.id-----@@@@@@@@@@@-->',gallery);
+
+    if(gallery.userID.toString() === req.user._id.toString())
+      Gallery.remove({_id: gallery._id});
+  })
+  .then(next(res.status(204).send()))
+  .catch(next(createError(401, 'invalid id')));
 });

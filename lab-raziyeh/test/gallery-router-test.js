@@ -211,6 +211,49 @@ describe('test /api/gallery', function(){
         });
       });
     });
-
   });
+
+  describe('testing DELETE to /api/gallery/:id', () => {
+    
+    before(done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleGallery.userID = this.tempUser._id.toString();
+      new Gallery(exampleGallery).save()
+      .then( gallery => {
+        this.tempGallery = gallery;
+        done();
+      })
+      .catch(done);
+    });
+
+    describe('Testing DELETE /api/gallery/:id  with valid id', () => {
+      it('should DELETE a gallery with valid id', done => {
+        console.log('this.tempGallery', this.tempGallery);
+        request.delete(`${url}/api/gallery/${this.tempGallery._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`,
+        })
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(204);
+          expect(err).to.be.null;
+          done();
+        });
+      });
+    });
+  }); 
 });
