@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const expect = require('chai').expect;
 const request = require('superagent');
@@ -30,7 +30,6 @@ describe('testing auth-router', function(){
         .send(exampleUser)
         .end((err, res) => {
           if (err) return done(err);
-          console.log('res.text', res.text);
           expect(res.status).to.equal(200);
           expect(!!res.text).to.equal(true);
           done();
@@ -73,7 +72,6 @@ describe('testing auth-router', function(){
         .auth('pudge', '1234')
         .end((err, res) => {
           if (err) return done(err);
-          console.log('res.text', res.text);
           expect(res.status).to.equal(200);
           expect(!!res.text).to.equal(true);
           done();

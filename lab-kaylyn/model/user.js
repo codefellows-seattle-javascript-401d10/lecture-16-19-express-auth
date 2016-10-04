@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
@@ -15,11 +15,11 @@ const userSchema = Schema({
   username: {type: String, required: true, unique: true},
   email: {type: String, required: true, unique: true},
   password: {type: String, required: true},
-  findHash: {type: String, unique: true},
+  findHash: {type: String, unique: true}, //findHash will produce a random and unique hash
 });
 
 
-// for signup
+// for signUP
 // store a password that has been encrypted as a hash
 userSchema.methods.generatePasswordHash = function(password){
   debug('generatePasswordHash');
@@ -32,8 +32,8 @@ userSchema.methods.generatePasswordHash = function(password){
   });
 };
 
-// for signin
-// compare a plain text password with the stored hashed password
+// for signIN
+// returns a Promise that uses bcrypt.compare to compare a plain text password with the stored hashed password
 userSchema.methods.comparePasswordHash = function(password){
   debug('comparePasswordHash');
   return new Promise((resolve, reject) => {
@@ -46,6 +46,7 @@ userSchema.methods.comparePasswordHash = function(password){
 };
 
 // for signup
+// this function is going to generate a random string that is 32 bytes of hex and try to save the user
 userSchema.methods.generateFindHash = function(){
   debug('generateFindHash');
   return new Promise((resolve, reject) => {
@@ -53,19 +54,19 @@ userSchema.methods.generateFindHash = function(){
     _generateFindHash.call(this);
 
     function _generateFindHash(){
-      this.findHash = crypto.randomBytes(32).toString('hex');
+      this.findHash = crypto.randomBytes(32).toString('hex'); //will return the 32 randomBytes as a string
       this.save()
-      .then(() => resolve(this.findHash))
+      .then(() => resolve(this.findHash)) //a one line arrow function is an implicit return, the whole function is going to resolve this value
       .catch(err => {
         if (tries > 3) return reject(err); // 500 error
         tries++;
-        _generateFindHash.call(this);
+        _generateFindHash.call(this); //recursive function, call invokes a function with a specified context
       });
     }
   });
 };
 
-// for sinup and signin
+// for signup and signin
 userSchema.methods.generateToken = function(){
   debug('generateToken');
   return new Promise((resolve, reject) => {
