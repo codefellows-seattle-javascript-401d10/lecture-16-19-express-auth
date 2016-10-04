@@ -156,6 +156,15 @@ describe('Testing /api/gallery routes', function() {
       delete exampleGallery.userID;
     });
 
+    it('no token, so should return unauthorized and status 401', done => {
+
+      request.get(`${url}/api/gallery/${this.tempGallery._id}`)
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+
     it('should return a gallery and status 200', done => {
 
       request.get(`${url}/api/gallery/${this.tempGallery._id}`)
@@ -172,5 +181,6 @@ describe('Testing /api/gallery routes', function() {
         done();
       });
     });
+
   });
 });
