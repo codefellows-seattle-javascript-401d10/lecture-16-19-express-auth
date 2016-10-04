@@ -11,6 +11,7 @@ const debug = require('debug')('judy: server');
 
 //app modules
 const authRouter = require('./route/auth-router.js');
+const galleryRouter = require('./route/gallery-router.js');
 const errorMiddleWare = require('./lib/error-middleware.js');
 
 //load env vars
@@ -32,6 +33,7 @@ app.use(morgan('dev'));
 
 //app routes
 app.use(authRouter);
+app.use(galleryRouter);
 app.use(errorMiddleWare);
 
 //start server

@@ -22,8 +22,9 @@
     "superagent": "^2.3.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "mongo": "mongod --dbpath ./db"
+    "mongo": "mongod --dbpath ./db",
+    "start": "DEBUG='judy*' node server.js",
+    "test": "DEBUG='judy*' ./node_modules/mocha/bin/mocha"
   },
   "author": "Judy Vue",
   "license": "MIT"

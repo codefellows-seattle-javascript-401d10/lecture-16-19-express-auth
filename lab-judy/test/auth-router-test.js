@@ -19,6 +19,31 @@ const exampleUser = {
 
 describe('testing auth-router', function(){
 
+  before(done => {
+    if (!server.isRunning){
+      server.listen(process.env.PORT), () => {
+        server.isRunning = true;
+        console.log('server up');
+        done();
+      };
+      return;
+    }
+    done();
+  });
+
+  after(done => {
+    if(server.isRunning){
+      server.close(err => {
+        if (err) return done(err);
+        server.isRunning = false;
+        console.log('server down');
+        done();
+      });
+      return;
+    }
+    done();
+  });
+
 
   //POST request status 200 with returned token
   describe('testing POST /api/signup', function(){
@@ -34,7 +59,6 @@ describe('testing auth-router', function(){
         .send(exampleUser)
         .end((err, res) => {
           if (err) return done(err);
-          console.log('res.text at line 36', res.text);
           expect(res.status).to.equal(200);
           expect(!!res.text).to.equal(true);
           done();
@@ -100,7 +124,7 @@ describe('testing auth-router', function(){
     });
   });
 
-  //GET test 401 if useres cannot be authenticated
+  //GET test 401 if users cannot be authenticated
   describe('testing GET /api/login', function(){
     describe('when user cannot be authenticated', function(){
       before( done => {

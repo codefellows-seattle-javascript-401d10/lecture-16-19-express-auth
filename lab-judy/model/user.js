@@ -1,8 +1,8 @@
 'use strict';
 
-const crypto = require('crypto');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const crypto = require('crypto'); //only for random # generation
+const bcrypt = require('bcrypt'); //thoroughly tested encryption
+const jwt = require('jsonwebtoken'); //used for encrypting/decrypting JS objects
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const createError = require('http-errors');
