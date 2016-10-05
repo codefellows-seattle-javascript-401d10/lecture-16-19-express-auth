@@ -121,30 +121,3 @@ describe('testing auth-router', function(){
     });
   }); //end of GET tests
 });
-
-//have to start server if it isn't already running, before each test.
-// before(done => {
-//   if (!server.isRunning){
-//     server.listen(process.env.PORT, () => {
-//       server.isRunning = true;
-//       console.log('server up');
-//       done();
-//     });
-//     return;
-//   }
-//   done();
-// });
-//
-// //turn server off after each test
-// after(done => {
-//   if (server.isRunning){
-//     server.close(err => {
-//       if (err) return done(err);
-//       server.isRunning = false;
-//       console.log('server down');
-//       done();
-//     });
-//     return;
-//   }
-//   done();
-// })

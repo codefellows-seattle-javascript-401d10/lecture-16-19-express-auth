@@ -43,24 +43,6 @@ galleryRouter.put('/api/gallery/:id', bearerAuth,  jsonParser, function(req, res
   .catch(err => next(createError(404, err.message)));
 });
 
-// galleryRouter.delete('/api/gallery/:id', bearerAuth, function(req, res, next) {
-//   //split this into two separate methods, find by id and check for auth, then remove
-//   Gallery.findById(req.params.id)
-//   .then(gallery => {
-//     if(gallery.userID.toString() !== req.user._id.toString())
-//       return next(createError(401, 'invalid userId'));
-//     return;
-//   })
-//   .catch(err => next(createError(404, err.message)));
-//   Gallery.remove(req.params.id)
-//   // Gallery.findByIdAndRemove(req.params.id)
-//   // .then(gallery => {
-//   //   console.log(gallery);
-//   // })
-//   .then(() => res.sendStatus(204))
-//   .catch(err => next(createError(404, err.message)));
-// });
-
 galleryRouter.delete('/api/gallery/:id', bearerAuth, function(req, res, next) {
   Gallery.findByIdAndRemove(req.params.id)
   .then(() => res.sendStatus(204))

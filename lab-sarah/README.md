@@ -12,48 +12,41 @@ From the root level of the project, enter 'npm start' in terminal to start the s
 
 ## Server endpoints
 
-### Sign-up and Login
+### authRouter
 
 POST requests
 
-/api/park/:parkID/dog
+/api/signup
 
-* Pass a new 'dog' as valid JSON into the body of the request to create a dog, and pass a parkID into the query string to specify the park the dog should reside in.
+* Create an 'account' with a unique username, password, and email address.
 
 GET requests
 
-/api/park/dog/:dogID
+/api/login
 
-* Pass a dog id to fetch a specific dog. No parkID required in query string.
-
-
-DELETE requests
-
-/api/dog/:dogID
-
-* Pass a dog id to delete that dog. No parkID required in query string.
+* Login using username and password
 
 
-###
+### galleryRouter
 
 POST requests
 
-/api/park
+/api/gallery
 
-* Pass in a new 'park' as valid JSON into the body of the request to create a park.
+* Pass in a new 'gallery' as valid JSON to upload a gallery.
 
 GET requests
 
-/api/park/:id
+/api/gallery/:id
 
-* Pass in a park id to fetch that park.
+* Pass in a gallery id to fetch that gallery.
 
 DELETE requests
 
-/api/park/:id
+/api/gallery/:id
 
-* Pass in a park id to delete that park.
+* Pass in a gallery id to delete that gallery.
 
 PUT requests
 
-* Pass in a park id and valid JSON into the body of the request to update a park.
+* Pass in a galery id and valid JSON into the body of the request to update a gallery.
