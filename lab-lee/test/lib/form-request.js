@@ -4,14 +4,10 @@ const FormData = require('form-data');
 const Promise = require('bluebird');
 const debug = require('debug')('leegram:form-request');
 
-module.exports = function(url, token, params) {
+module.exports = function(url, params) {
   debug();
   return new Promise((resolve, reject) => {
     let form = new FormData();
-    // let options = {
-    //   header: `Authorization: Bearer ${token}`,
-    // };
-
     for (var key in params) {
       form.append(key, params[key]);
     }
@@ -23,7 +19,8 @@ module.exports = function(url, token, params) {
       res.on('data', data => json += data.toString());
       res.on('end', () => {
         try {
-          res.body = JSON.parse(json);
+          let result = JSON.parse(json);
+          res.body = result;
           resolve(res);
         } catch(err) {
           reject(err);

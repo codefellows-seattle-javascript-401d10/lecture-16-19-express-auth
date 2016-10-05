@@ -1,10 +1,12 @@
 'use strict';
 
+// node modules
+const fs = require('fs');
+
 // npm modules
 const expect = require('chai').expect;
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const debug = require('debug')('leegram:pic-router-test');
-const fs = require('fs');
 
 // app modules
 const User = require('../model/user.js');
@@ -33,9 +35,9 @@ const examplePic = {
 };
 
 // config
-mongoose.Promise = Promise;
+// mongoose.Promise = Promise;
 
-describe('stuff', function() {
+describe('testing pic router', function() {
 
   before(done => {
     if (!server.isRunning){
@@ -110,20 +112,17 @@ describe('stuff', function() {
       });
 
       it('should return a pic', done => {
-        formRequest(`${url}/api/gallery/${this.tempGallery._id}/pic`, this.tempToken, examplePic)
-
+        formRequest(`${url}/api/gallery/${this.tempGallery._id}/pic`, examplePic)
         .then( res => {
           expect(res.statusCode).to.equal(200);
           expect(res.body.name).to.equal(examplePic.name);
           expect(res.body.desc).to.equal(examplePic.desc);
-          expect(res.body.galeryID).to.equal(this.tempGallery._id.toString());
+          expect(res.body.galleryID.toString()).to.equal(this.tempGallery._id.toString());
           // expect(res.body.imageURI).to.equal('http://lulwat/img.pic');
           done();
         })
         .catch(done);
       });
-
-
     });
   });
 });

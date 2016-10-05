@@ -31,9 +31,9 @@ app.use(cors()); //telling the app to use cors to do cross-side scripting
 app.use(morgan('dev')); //telling the app to use morgan middleware
 
 // app routes
+app.use(picRouter);
 app.use(authRouter); //telling the app to use the auth router
 app.use(galleryRouter);
-app.use(picRouter);
 app.use(errorMiddleware); // telling the app to use our error middleware
 
 // start server

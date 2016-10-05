@@ -1,8 +1,8 @@
 'use strict';
 
 // node modules
-const path = require('path'); // has a param name extname that can give us the ext of the file
 const fs = require('fs');
+const path = require('path'); // has a param name extname that can give us the ext of the file
 
 // npm modules
 const AWS = require('aws-sdk');
@@ -16,6 +16,7 @@ const Pic = require('../model/pic.js');
 const Gallery = require('../model/gallery.js');
 // const bearerAuth = require('../lib/bearer-auth-middleware.js');
 
+// module constants
 const s3 = new AWS.S3();
 const upload = multer({dest: `${__dirname}/../data`});
 const picRouter = module.exports = require('express').Router();
@@ -25,7 +26,7 @@ picRouter.post('/api/gallery/:galleryID/pic', upload.single('image'), function(r
   console.log('req.file', req.file);
   if(!req.file)
     return next(createError(400, 'no file found'));//can multer find?
-  if(!req.path)
+  if(!req.file.path)
     return next(createError(500, 'file was not saved'));//can multer save?
 
   let ext = path.extname(req.file.originalname); //'.jpg'
@@ -36,6 +37,7 @@ picRouter.post('/api/gallery/:galleryID/pic', upload.single('image'), function(r
     Key: `${req.file.filename}${ext}`, //name of the file
     Body: fs.createReadStream(req.file.path),
   };
+
   s3.upload(params, function(err, s3data){
     if(err) return next(err);
     Gallery.findById(req.params.galleryID)
@@ -48,9 +50,7 @@ picRouter.post('/api/gallery/:galleryID/pic', upload.single('image'), function(r
       };
       return new Pic(picData).save();
     })
-    .then( pic => res.join(pic))
+    .then( pic => res.json(pic))
     .catch(next);
-    //create a picture
-    // res.json({mgs: 'whatever'});
   });
 });
