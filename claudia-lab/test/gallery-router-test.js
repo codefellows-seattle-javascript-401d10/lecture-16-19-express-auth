@@ -85,49 +85,52 @@ describe('testing gallery router', function() {
     });
 
     //test for POST response code 200
-    it ('should return a gallery', (done)=> {
-      request.post(`${url}/api/gallery`)
-      .send(exampleGallery) //send it example gallery to test
-      // makes the header
-      .set({Authorization: `Bearer ${this.tempToken}`})
-      .end((err, res) => {
-        if (err) return done(err);
-        console.log('res.text', res.text);
-        expect(res.status).to.equal(200);
-        expect(res.body.name).to.equal(exampleGallery.name);
-        expect(res.body.description).to.equal(exampleGallery.description);
-        //user id has to be set to temp user id given by mongo
-        expect(res.body.userID).to.equal(this.tempUser._id.toString()); //tempuser._id is an object - needs to turn to string
-        let date = new Date(res.body.created).toString();
-        expect(date).to.not.equal('Invalid Date');
-        done();
-      });
-    }); //end it block
+    describe('with valid body', () => {
+      it ('should return a gallery', (done)=> {
+        request.post(`${url}/api/gallery`)
+        .send(exampleGallery) //send it example gallery to test
+        // makes the header
+        .set({Authorization: `Bearer ${this.tempToken}`})
+        .end((err, res) => {
+          if (err) return done(err);
+          console.log('res.text', res.text);
+          expect(res.status).to.equal(200);
+          expect(res.body.name).to.equal(exampleGallery.name);
+          expect(res.body.description).to.equal(exampleGallery.description);
+          //user id has to be set to temp user id given by mongo
+          expect(res.body.userID).to.equal(this.tempUser._id.toString()); //tempuser._id is an object - needs to turn to string
+          let date = new Date(res.body.created).toString();
+          expect(date).to.not.equal('Invalid Date');
+          done();
+        });
+      }); //end it block
+    });
 
-    //test for POST response code 401 - Unauthorized
-    it ('should respond with 401 unauthorized', (done)=> {
-      request.post(`${url}/api/gallery`)
-      .send(exampleGallery)
-      //don't set Authorization- no token provided
-      //error generated in bearer-auth-middleware
-      .end((err, res) => {
-        expect(res.status).to.equal(401);
-        done();
-      });
-    }); //end it block
+    describe('with invalid token', () => {
+      it ('should respond with 401 unauthorized', (done)=> {
+        request.post(`${url}/api/gallery`)
+        .send(exampleGallery)
+        //don't set Authorization- no token provided
+        //error generated in bearer-auth-middleware
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      }); //end it block
+    }); //end testing POST 401
 
-
-    //test for POST response code 400 - Bad Request
-    it ('should respond with 400 bad request', (done)=> {
-      request.post(`${url}/api/gallery`)
-      .set('Content-type', 'application/json')
-      .set({Authorization: `Bearer ${this.tempToken}`})
-      .send('asdfasdf')
-      .end((err, res) => {
-        expect(res.status).to.equal(400);
-        done();
-      });
-    }); //end it block
+    describe('with no body or invalid body', () => {
+      it ('should respond with 400 bad request', (done)=> {
+        request.post(`${url}/api/gallery`)
+        .set('Content-type', 'application/json')
+        .set({Authorization: `Bearer ${this.tempToken}`})
+        .send('asdfasdf')
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      }); //end it block
+    });//end testing POST 400
 
   }); //end describe testing POST
 
@@ -164,7 +167,7 @@ describe('testing gallery router', function() {
       delete exampleGallery.userID;
     });
 
-    describe('request with a valid body', () => {
+    describe('with a valid body', () => {
       it ('should return a gallery', (done)=> {
         request.get(`${url}/api/gallery/${this.tempGallery._id}`)
         // makes the header
@@ -184,7 +187,7 @@ describe('testing gallery router', function() {
     }); //end testing GET 200
 
     //Testing GET 404 not found
-    describe('testing for valid request made with id that was not found', () => {
+    describe('with valid request made with id that was not found', () => {
       it('should return error 404 not found', done => {
         request.get(`${url}/api/gallery/asdfasdf`)
         .set({Authorization: `Bearer ${this.tempToken}`})
@@ -196,7 +199,7 @@ describe('testing gallery router', function() {
     }); //end describe testing 404
 
     //test for GET response code 401 - Unauthorized
-    describe('testing for input with invalid password', () => {
+    describe('with invalid token', () => {
       it ('should respond with 401 unauthorized', (done)=> {
         request.get(`${url}/api/gallery/${this.tempGallery._id}`)
         .set({Authorization: 'asdf'})
@@ -241,7 +244,7 @@ describe('testing gallery router', function() {
       delete exampleGallery.userID;
     });
 
-    describe('request with a valid body', () => {
+    describe('with valid body', () => {
       it ('should return an updated gallery', (done)=> {
         request.put(`${url}/api/gallery/${this.tempGallery._id}`)
         .send({name: 'bob', description: 'pictures of geese'})
@@ -253,15 +256,15 @@ describe('testing gallery router', function() {
           expect(res.body.name).to.equal('bob');
           expect(res.body.description).to.equal('pictures of geese');
           expect(res.body.userID).to.equal(this.tempUser._id.toString());
-          // let date = new Date(res.body.created).toString();
-          // expect(date).to.not.equal('Invalid Date');
+          let date = new Date(res.body.created).toString();
+          expect(date).to.not.equal('Invalid Date');
           this.tempGallery = res.body;
           done();
         });
       }); //end it block
     }); //end testing PUT 200
 
-    describe('no token provided', () => {
+    describe('with no token provided', () => {
       it ('should respond with 401 unauthorized', (done)=> {
         request.put(`${url}/api/gallery/${this.tempGallery._id}`)
         .send({name: 'bob', description: 'pictures of geese'})
@@ -327,7 +330,7 @@ describe('testing gallery router', function() {
       .catch(done);
     });
 
-    describe('testing if a route has been deleted', () => {
+    describe('successful deletion', () => {
       it ('should respond with 204 successful deletion', done => {
         request.delete(`${url}/api/gallery/${this.tempGallery._id}`)
         .set({Authorization: `Bearer ${this.tempToken}`})
@@ -338,7 +341,8 @@ describe('testing gallery router', function() {
         });
       }); // end it block
     }); //end testing 204
-    describe('testing if a route has been deleted', () => {
+
+    describe('with invalid id', () => {
       it ('should respond with 404 not found', done => {
         request.delete(`${url}/api/gallery/blerg`) //invalid id
         .set({Authorization: `Bearer ${this.tempToken}`})
