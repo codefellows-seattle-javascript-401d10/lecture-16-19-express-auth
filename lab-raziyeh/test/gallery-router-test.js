@@ -291,10 +291,10 @@ describe('test /api/gallery', function(){
         })
         .send({name:'rozi', desc:'hey I am updated'})
         .end((err, res) => {
-          console.log('------------------>',res);
+          console.log('------------------>',res.body);
           if(err) done(err);
           expect(res.status).to.equal(200);
-          expect(res.body.name).to.equal('rozi');
+          expect(res.text.name).to.equal('rozi');
           expect(err).to.be.null;
           done();
         });
