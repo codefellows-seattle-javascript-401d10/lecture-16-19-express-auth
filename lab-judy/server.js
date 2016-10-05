@@ -13,6 +13,7 @@ const debug = require('debug')('judy: server');
 const authRouter = require('./route/auth-router.js');
 const galleryRouter = require('./route/gallery-router.js');
 const errorMiddleWare = require('./lib/error-middleware.js');
+const picRouter = require('./route/pic-router.js');
 
 //load env vars
 dotenv.load();
@@ -34,6 +35,7 @@ app.use(morgan('dev'));
 //app routes
 app.use(authRouter);
 app.use(galleryRouter);
+app.use(picRouter);
 app.use(errorMiddleWare);
 
 //start server
