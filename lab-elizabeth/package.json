@@ -17,14 +17,18 @@
   },
   "homepage": "https://github.com/Tenlia/lecture-16-19-express-auth#readme",
   "dependencies": {
+    "bcrypt": "^0.8.7",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "cors": "^2.8.1",
+    "crypto": "0.0.3",
     "debug": "^2.2.0",
     "dotenv": "^2.0.0",
     "express": "^4.14.0",
     "http-errors": "^1.5.0",
+    "jsonwebtoken": "^7.1.9",
     "mongoose": "^4.6.2",
-    "morgan": "^1.7.0"
+    "morgan": "^1.7.0",
+    "superagent": "^2.3.0"
   }
 }
