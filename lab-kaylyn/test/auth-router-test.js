@@ -112,7 +112,7 @@ describe('testing auth-router', function(){
       });
 
       describe('testing invalid GET requests /api/signup', () => {
-        
+
         it('should return 401 status code if users cannot be authenticated', (done) => {
           request.get(`${url}/api/login`)
           .auth('pudge', '666')
