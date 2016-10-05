@@ -45,7 +45,9 @@ describe('testing auth-router', function(){
   });
 
   describe('testing POST /api/signup', function(){
+
     describe('with valid body', function(){
+
       after( done => {
         User.remove({})
         .then( () => done())
@@ -62,7 +64,9 @@ describe('testing auth-router', function(){
           done();
         });
       });
+
       describe('testing invalid POST requests /api/signup', () => {
+
         it('should return a 400 status code for bad request', (done) => {
           request.post(`${url}/api/signup`)
           .send({username: 666, password: '', email:''})
@@ -76,7 +80,9 @@ describe('testing auth-router', function(){
   });
 
   describe('testing GET /api/signup', function(){
+
     describe('with valid body', function(){
+
       before( done => {
         let user  =  new User(exampleUser); // mocks
         user.generatePasswordHash(exampleUser.password)
@@ -104,7 +110,9 @@ describe('testing auth-router', function(){
           done();
         });
       });
+
       describe('testing invalid GET requests /api/signup', () => {
+        
         it('should return 401 status code if users cannot be authenticated', (done) => {
           request.get(`${url}/api/login`)
           .auth('pudge', '666')

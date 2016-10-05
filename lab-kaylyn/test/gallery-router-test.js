@@ -4,6 +4,7 @@
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
+const debug = require('debug')('catgram:gallery-router');
 const Promise = require('bluebird');
 
 // app
@@ -27,11 +28,12 @@ const exampleGallery = {
 mongoose.Promise = Promise;
 
 describe('test /api/gallery', function(){
+
   before(done => {
     if (!server.isRunning){
       server.listen(process.env.PORT, () => {
         server.isRunning = true;
-        console.log('server up');
+        debug('server up');
         done();
       });
       return;
@@ -44,14 +46,13 @@ describe('test /api/gallery', function(){
       server.close(err => {
         if (err) return done(err);
         server.isRunning = false;
-        console.log('server down');
+        debug('server down');
         done();
       });
       return;
     }
     done();
   });
-
 
   afterEach(done => {
     Promise.all([
@@ -64,7 +65,6 @@ describe('test /api/gallery', function(){
 
   describe('testing POST to /api/gallery', () => {
     before(done => {
-      console.log('create user');
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
       .then( user => user.save())
@@ -96,9 +96,10 @@ describe('test /api/gallery', function(){
         done();
       });
     });
+
     describe('testing invalid POST if invalid body', () => {
+
       before(done => {
-        console.log('create user');
         new User(exampleUser)
         .generatePasswordHash(exampleUser.password)
         .then( user => user.save())
@@ -125,7 +126,9 @@ describe('test /api/gallery', function(){
           done();
         });
       });
+
       describe('testing invalid POST if no token found', () => {
+
         it('should return a status code of 401', done => {
           request.post(`${url}/api/gallery`)
           .send(exampleGallery)
@@ -140,8 +143,8 @@ describe('test /api/gallery', function(){
   });
 
   describe('testing GET to /api/gallery/:id', () => {
+
     before(done => {
-      console.log('create user');
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
       .then( user => user.save())
@@ -157,7 +160,6 @@ describe('test /api/gallery', function(){
     });
 
     before( done => {
-      console.log('create gallery');
       exampleGallery.userID = this.tempUser._id.toString();
       new Gallery(exampleGallery).save()
       .then( gallery => {
@@ -187,8 +189,11 @@ describe('test /api/gallery', function(){
         done();
       });
     });
+
     describe('testing invalid GET requests', () => {
+
       describe('testing invalid GET request if id not found', () => {
+
         it('should return a status code of 404', done => {
           request.get(`${url}/api/gallery/666`)
           .set({
@@ -200,7 +205,9 @@ describe('test /api/gallery', function(){
           });
         });
       });
+
       describe('testing invalid GET request if no token found', () => {
+
         it('should return a status code 0f 401', done => {
           request.get(`${url}/api/gallery/${this.tempGallery._id}`)
           .set({})
@@ -214,9 +221,10 @@ describe('test /api/gallery', function(){
   });
 
   describe('testing PUT to /api/gallery', () => {
+
     describe('testing valid PUT requests', () => {
+
       before(done => {
-        console.log('create user');
         new User(exampleUser)
         .generatePasswordHash(exampleUser.password)
         .then( user => user.save())
@@ -230,8 +238,8 @@ describe('test /api/gallery', function(){
         })
         .catch(done);
       });
+
       before( done => {
-        console.log('create gallery');
         exampleGallery.userID = this.tempUser._id.toString();
         new Gallery(exampleGallery).save()
         .then( gallery => {
@@ -266,7 +274,9 @@ describe('test /api/gallery', function(){
         });
       });
     });
+
     describe('testing invalid PUT request for invalid body', () => {
+
       let updatedGallery = ('string');
       it('should return a status code of 400', done => {
         request.put(`${url}/api/gallery/${this.tempGallery._id}`)
@@ -280,11 +290,14 @@ describe('test /api/gallery', function(){
           done();
         });
       });
+
       describe('testing invalid PUT requests for token not found', () => {
+
         let updatedGallery = {
           name: 'updated name',
           desc:'updated description',
         };
+        
         it('should return a status code of 401', done => {
           request.put(`${url}/api/gallery/${this.tempGallery._id}`)
           .set('Content-type', 'applications/json')
