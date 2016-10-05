@@ -55,7 +55,13 @@ galleryRouter.delete('/api/gallery/:id', bearerAuth, function(req, res, next) {
 galleryRouter.get('/api/gallery', bearerAuth, jsonParser, function(req, res, next) {
   debug('hit route GET /api/gallery');
   Gallery.find()
-  .then( galleries => res.json(galleries))
+  .then( galleries => {
+    var newArray = [];
+    for (var i = 0; i < galleries.length; i++) {
+      newArray.push(galleries[i]._id);
+    }
+    return res.json(newArray);
+  })
   .catch( err => {
     if (err.name === 'ValidationError') return next(err);
     next(createError(404, err.message));
