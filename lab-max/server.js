@@ -13,6 +13,7 @@ const debug = require('debug')('meekslib:server');
 const errorMiddleware = require('./lib/error-middleware.js');
 const authRouter = require('./route/auth-router.js');
 const libraryRouter = require('./route/library-router.js');
+const bookRouter = require('./route/book-router.js');
 // load env vars (environment variables)
 dotenv.load();
 
@@ -29,6 +30,7 @@ app.use(morgan('dev'));
 // app routes
 app.use(authRouter);
 app.use(libraryRouter);
+app.use(bookRouter);
 app.use(errorMiddleware);
 
 // start server
