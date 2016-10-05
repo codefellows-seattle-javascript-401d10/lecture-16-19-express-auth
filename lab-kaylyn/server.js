@@ -12,6 +12,7 @@ const debug = require('debug')('catgram:sever');
 // app modules
 const authRouter = require('./route/auth-router.js');
 const galleryRouter = require('./route/gallery-router.js');
+const picRouter = require('./route/gallery-router.js');
 const errorMiddleware = require('./lib/error-middleware.js');
 
 // load env vars
@@ -32,6 +33,7 @@ app.use(morgan('dev'));
 // app routes
 app.use(authRouter);
 app.use(galleryRouter);
+app.use(picRouter);
 app.use(errorMiddleware);
 
 // start server

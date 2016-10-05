@@ -313,116 +313,116 @@ describe('test /api/gallery', function(){
   });
 
 
-    describe('testing DELETE routes to /api/gallery/:id', function(){
-      describe('testing valid DELETE', function(){
+  describe('testing DELETE routes to /api/gallery/:id', function(){
+    describe('testing valid DELETE', function(){
 
-        before(done => {
-          new User(exampleUser)
-          .generatePasswordHash(exampleUser.password)
-          .then( user => user.save())
-          .then( user => {
-            this.tempUser = user;
-            return user.generateToken();
-          })
-          .then( token => {
-            this.tempToken = token;
-          })
-          .then(() => {
-            exampleGallery.userID = this.tempUser._id.toString();
-            new Gallery(exampleGallery).save()
-            .then( gallery => {
-              this.tempGallery = gallery;
-              done();
-            });
-          })
-          .catch(done);
-        });
-
-        after( () => {
-          delete exampleGallery.userID;
-        });
-
-        it('should return a 204 status code for successful delete', done => {
-          request.delete(`${url}/api/gallery/${this.tempGallery._id}`)
-          .set({
-            Authorization: `Bearer ${this.tempToken}`,
-          })
-          .end((err, res) => {
-            if(err) return done(err);
-            expect(res.status).to.equal(204);
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save())
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+        })
+        .then(() => {
+          exampleGallery.userID = this.tempUser._id.toString();
+          new Gallery(exampleGallery).save()
+          .then( gallery => {
+            this.tempGallery = gallery;
             done();
           });
-        });
+        })
+        .catch(done);
       });
 
-      describe('testing valid DELETE', function(){
-
-        before(done => {
-          new User(exampleUser)
-          .generatePasswordHash(exampleUser.password)
-          .then( user => user.save())
-          .then( user => {
-            this.tempUser = user;
-            return user.generateToken();
-          })
-          .then( token => {
-            this.tempToken = token;
-          })
-          .then(() => {
-            exampleGallery.userID = this.tempUser._id.toString();
-            new Gallery(exampleGallery).save()
-            .then( gallery => {
-              this.tempGallery = gallery;
-              done();
-            });
-          })
-          .catch(done);
-        });
-
-        after( () => {
-          delete exampleGallery.userID;
-        });
-
-        it('should return a 401 status code for no token/bad token', done => {
-          request.delete(`${url}/api/gallery/${this.tempGallery._id}`)
-          .end((err, res) => {
-            expect(res.status).to.equal(401);
-            done();
-          });
-        });
+      after( () => {
+        delete exampleGallery.userID;
       });
 
-      describe('testing valid DELETE', function(){
-
-        before(done => {
-          new User(exampleUser)
-          .generatePasswordHash(exampleUser.password)
-          .then( user => user.save())
-          .then( user => {
-            this.tempUser = user;
-            return user.generateToken();
-          })
-          .then( token => {
-            this.tempToken = token;
-            done();
-          })
-          .catch(done);
-        });
-
-        after( () => {
-          delete exampleGallery.userID;
-        });
-
-        it('should return a 404 status code for invalid id', done => {
-          request.delete(`${url}/api/gallery/666`)
-          .set({
-            Authorization: `Bearer ${this.tempToken}`,
-          })
-          .end((err, res) => {
-            expect(res.status).to.equal(404);
-            done();
-          });
+      it('should return a 204 status code for successful delete', done => {
+        request.delete(`${url}/api/gallery/${this.tempGallery._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`,
+        })
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(204);
+          done();
         });
       });
     });
+
+    describe('testing valid DELETE', function(){
+
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save())
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+        })
+        .then(() => {
+          exampleGallery.userID = this.tempUser._id.toString();
+          new Gallery(exampleGallery).save()
+          .then( gallery => {
+            this.tempGallery = gallery;
+            done();
+          });
+        })
+        .catch(done);
+      });
+
+      after( () => {
+        delete exampleGallery.userID;
+      });
+
+      it('should return a 401 status code for no token/bad token', done => {
+        request.delete(`${url}/api/gallery/${this.tempGallery._id}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+
+    describe('testing valid DELETE', function(){
+
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save())
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( () => {
+        delete exampleGallery.userID;
+      });
+
+      it('should return a 404 status code for invalid id', done => {
+        request.delete(`${url}/api/gallery/666`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`,
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+  });
 });
