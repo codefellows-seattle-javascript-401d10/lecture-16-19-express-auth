@@ -62,8 +62,5 @@ galleryRouter.get('/api/gallery', bearerAuth, jsonParser, function(req, res, nex
     }
     return res.json(newArray);
   })
-  .catch( err => {
-    if (err.name === 'ValidationError') return next(err);
-    next(createError(404, err.message));
-  });
+  .catch(next); 
 });
