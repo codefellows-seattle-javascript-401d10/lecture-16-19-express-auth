@@ -8,12 +8,12 @@ module.exports = function(url, token, params) {
   debug();
   return new Promise((resolve, reject) => {
     let form = new FormData();
-    let options = {
-      header: `Authorization: Bearer ${token}`,
-    };
+    // let options = {
+    //   header: `Authorization: Bearer ${token}`,
+    // };
 
     for (var key in params) {
-      form.append(key, params[key], options);
+      form.append(key, params[key]);
     }
 
     form.submit(url, function(err, res) {

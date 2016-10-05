@@ -13,6 +13,7 @@ const debug = require('debug')('leegram:server'); //logging tool
 const errorMiddleware = require('./lib/error-middleware'); //error routes
 const galleryRouter = require('./route/gallery-router.js');
 const authRouter = require('./route/auth-router'); //auth routes
+const picRouter = require('./route/pic-router');
 
 // load env vars
 dotenv.load(); //look in current directory for .env and adds to process.env
@@ -32,6 +33,7 @@ app.use(morgan('dev')); //telling the app to use morgan middleware
 // app routes
 app.use(authRouter); //telling the app to use the auth router
 app.use(galleryRouter);
+app.use(picRouter);
 app.use(errorMiddleware); // telling the app to use our error middleware
 
 // start server
