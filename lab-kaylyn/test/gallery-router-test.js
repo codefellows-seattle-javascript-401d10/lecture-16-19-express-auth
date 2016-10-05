@@ -15,13 +15,14 @@ const Gallery = require('../model/gallery.js');
 // const
 const url = `http://localhost:${process.env.PORT}`;
 const exampleUser = {
-  username: 'slugbyte',
+  username: 'pudge',
   password: '1234',
-  email: 'slug@slug.slug',
+  email: 'pudge@pudge.life',
 };
+
 const exampleGallery = {
-  name: 'beach adventure',
-  desc: 'not enough sun screan ouch',
+  name: 'pudge the fat cat',
+  desc: 'pictures of a fat cat named pudge',
 };
 
 // config

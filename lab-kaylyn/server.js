@@ -12,8 +12,10 @@ const debug = require('debug')('catgram:sever');
 // app modules
 const authRouter = require('./route/auth-router.js');
 const galleryRouter = require('./route/gallery-router.js');
-const picRouter = require('./route/gallery-router.js');
+const picRouter = require('./route/pic-router.js');
 const errorMiddleware = require('./lib/error-middleware.js');
+const basicMiddleware = require('./lib/basic-auth-middleware.js');
+
 
 // load env vars
 dotenv.load();
@@ -35,6 +37,7 @@ app.use(authRouter);
 app.use(galleryRouter);
 app.use(picRouter);
 app.use(errorMiddleware);
+app.use(basicMiddleware);
 
 // start server
 const server = module.exports = app.listen(PORT , () => {

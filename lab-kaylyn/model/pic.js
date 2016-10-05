@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const picSchema = mongoose.Schema({
   name: {type: String, required: true},
   desc: {type: String, required: true},
-  userID: {type: mongoose.Schema.Types.ObjectId, required: true},
   galleryID: {type: mongoose.Schema.Types.ObjectId, required: true},
   imageURI: {type: String, required: true, unique: true},
   created: {type: Date, default: Date.now},

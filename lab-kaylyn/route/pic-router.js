@@ -8,7 +8,7 @@ const multer = require('multer');
 const createError = require('http-errors');
 const debug = require('debug')('catgram:pic-router');
 
-const User = require('../model/user');
+// const User = require('../model/user');
 const Gallery = require('../model/gallery');
 const Pic = require('../model/pic');
 
@@ -16,7 +16,7 @@ const s3 = new AWS.S3();
 const upload = multer({dest: `${__dirname}/../data`});
 const picRouter = module.exports = require('express').Router();
 
-picRouter .post('/api/gallery/:galleryID/pic', upload.single('image'), function(req, res, next){
+picRouter.post('/api/gallery/:galleryID/pic', upload.single('image'), function(req, res, next){
   debug('POST /api/gallery/:galleryID/pic');
   if(!req.file) return next(createError(400, 'no file found'));
   if(!req.file.path) return next(createError(500, 'file was not saved'));
@@ -32,7 +32,7 @@ picRouter .post('/api/gallery/:galleryID/pic', upload.single('image'), function(
 
   s3.upload(params, function(err, s3data){
     if (err) return next(err);
-    Gallery.findById(req.params.galleryId)
+    Gallery.findById(req.params.galleryID)
     .then(gallery => {
       let picData = {
         name: req.body.name,

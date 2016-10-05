@@ -5,8 +5,6 @@ const debug = require('debug')('catgram:server');
 
 module.exports = function(err, req, res, next){
   debug('error middleware');
-  console.error(err.message);
-  console.error('name', err.name);
 
   if (err.status){
     res.status(err.status).send(err.name);
