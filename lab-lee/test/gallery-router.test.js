@@ -10,7 +10,6 @@ const Promise = require('bluebird');
 const server = require('../server.js');
 const User = require('../model/user.js');
 const Gallery = require('../model/gallery.js');
-const debug = require('debug')('leegram:gallery-route-test');
 
 // variable constants
 const url = `http://localhost:${process.env.PORT}`;
@@ -354,64 +353,6 @@ describe('Testing /api/gallery routes', function() {
       });
     });
   });
-  describe('testing POST to /api/gallery', () => {
-
-    before( done => {
-      new User(exampleUser)
-      .generatePasswordHash(exampleUser.password)
-      .then( user => user.save())
-      .then( user => {
-        this.tempUser = user;
-        return user.generateToken();
-      })
-      .then( token => {
-        this.tempToken = token;
-        done();
-      })
-      .catch(done);
-    });
-
-    it('should return a gallery and status 200', done => {
-
-      request.post(`${url}/api/gallery`)
-      .send(exampleGallery)
-      .set({
-        Authorization: `Bearer ${this.tempToken}`,
-      })
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.status).to.equal(200);
-        expect(res.body.name).to.equal(exampleGallery.name);
-        expect(res.body.desc).to.equal(exampleGallery.desc);
-        expect(res.body.userID).to.equal(this.tempUser._id.toString());
-        let date = new Date(res.body.created).toString();
-        expect(date).to.not.equal('Invalid Date');
-        done();
-      });
-    });
-
-    it('no token, so should return unauthorized and status 401', done => {
-      request.post(`${url}/api/gallery`)
-      .send(exampleGallery)
-      .end((err, res) => {
-        expect(res.status).to.equal(401);
-        done();
-      });
-    });
-
-    it('no body, so should return bad request and status 400', done => {
-      request.post(`${url}/api/gallery`)
-      .set('Content-Type', 'application/json')
-      .send('notjson')
-      .set({
-        'Authorization': `Bearer ${this.tempToken}`,
-      })
-      .end((err, res) => {
-        expect(res.status).to.equal(400);
-        done();
-      });
-    });
-  });
 
   describe('testing GET to /api/gallery', () => {
 
@@ -476,13 +417,11 @@ describe('Testing /api/gallery routes', function() {
         Authorization: `Bearer ${this.tempToken}`,
       })
       .end((err, res) => {
-        debug('res.body', res.body);
         if (err) return done(err);
         expect(res.status).to.equal(200);
         expect(res.body.length).to.equal(2);
         done();
       });
     });
-
   });
 });

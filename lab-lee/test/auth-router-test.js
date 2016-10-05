@@ -96,7 +96,7 @@ describe('testing auth-router', function() {
 
   describe('testing GET /api/login', function() {
 
-    describe('with valid body', function() {
+    describe('with valid request id', function() {
 
       before( done => {
         let user = new User(exampleUser);
