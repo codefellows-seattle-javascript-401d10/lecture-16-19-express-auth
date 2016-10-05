@@ -3,7 +3,7 @@
 const Router = require('express').Router;
 const jsonParser = require('body-parser').json();
 const debug = require('debug')('bookstagram:auth-router');
-const basicAuth = require('../lib/basic-auth-middleware');
+const bearerAuth = require('../lib/bearer-auth-middleware');
 
 const User = require('../model/user');
 
@@ -11,10 +11,8 @@ const authRouter = module.exports = Router();
 
 authRouter.post('/api/signup', jsonParser, function(req, res, next){
   debug('POST /api/signup');
-  console.log(req.body);
-  let password = req.body.password;
-  console.log('password', password);
 
+  let password = req.body.password;
   delete req.body.password;
   let user = new User(req.body);
 
@@ -25,7 +23,7 @@ authRouter.post('/api/signup', jsonParser, function(req, res, next){
   .catch(next);
 });
 
-authRouter.get('/api/login', basicAuth, function(req, res, next){
+authRouter.get('/api/login', bearerAuth, function(req, res, next){
   debug('GET /api/login');
 
   User.findOne({username: req.auth.username})

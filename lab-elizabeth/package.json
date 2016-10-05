@@ -28,7 +28,13 @@
     "http-errors": "^1.5.0",
     "jsonwebtoken": "^7.1.9",
     "mongoose": "^4.6.2",
-    "morgan": "^1.7.0",
+    "morgan": "^1.7.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.7.1",
+    "mocha": "^3.1.0",
+    "mocha-eslint": "^3.0.1",
     "superagent": "^2.3.0"
   }
 }

@@ -18,8 +18,6 @@ const userSchema = Schema({
   findHash: {type: String, unique: true},
 });
 
-module.exports = mongoose.model('user', userSchema);
-
 userSchema.methods.generatePasswordHash = function(password){
   debug('generatePasswordHash');
   return new Promise((resolve, reject) => {
@@ -56,7 +54,7 @@ userSchema.methods.generateFindHash = function(){
       .catch(err => {
         if(tries > 3) return reject(err);
         tries++;
-        _generateFindHash(this);
+        _generateFindHash.call(this);
       });
     }
   });
@@ -70,3 +68,5 @@ userSchema.methods.generateToken = function(){
     .catch(err => reject(err));
   });
 };
+
+module.exports = mongoose.model('user', userSchema);

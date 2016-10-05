@@ -1,9 +1,10 @@
 'use strict';
 
+const expect = require('chai').expect;
+const request = require('superagent');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
-const request = require('superagent');
-const expect = require('chai').expect;
+const debug = require('debug')('bookstagram:auth-router-test');
 
 const User = require('../model/user');
 
@@ -17,15 +18,40 @@ const exampleUser = {
   email: 'hobbits@theshire.middleearth',
 };
 
-describe('auth-router', function(){
+describe('testing auth-router', function(){
 
-  before()
+  before(done => {
+    debug('starting server');
+    if(!server.isRunning){
+      server.listen(process.env.PORT, () => {
+        server.isRunning = true;
+        debug('server up');
+        done();
+      });
+      return;
+    }
+  });
+
+  after(done => {
+    debug('closing server');
+    if(server.isRunning){
+      server.close(err => {
+        if(err) return done(err);
+        server.isRunning = false;
+        debug('server down');
+        done();
+      });
+      return;
+    }
+    done();
+  });
 
   describe('POST /api/signup', function(){
 
     describe('with valid body', function(){
 
       after(done => {
+        debug('removing user');
         User.remove({})
         .then(() => done())
         .catch(done);
@@ -36,9 +62,9 @@ describe('auth-router', function(){
         .send(exampleUser)
         .end((err, res) => {
           if(err) return done(err);
-          console.log('res.text', res.text);
+          debug('res.text', res.text);
           expect(res.status).to.equal(200);
-          expect(!!res.text).to.equal(true);
+          expect(res.text).to.not.equal(true);
           done();
         });
       });
@@ -52,6 +78,7 @@ describe('auth-router', function(){
     describe('with valid body', function(){
 
       before(done => {
+        debug('making user');
         let user = new User(exampleUser);
         user.generatePasswordHash(exampleUser.password)
         .then(user => user.save())
@@ -63,6 +90,7 @@ describe('auth-router', function(){
       });
 
       after(done => {
+        debug('removing user');
         User.remove({})
         .then(() => done())
         .catch(done);
@@ -73,9 +101,9 @@ describe('auth-router', function(){
         .auth('J.R.R.Tolkien', '1ring')
         .end((err, res) => {
           if(err) return done(err);
-          console.log('res.text', res.text);
+          debug('res.text', res.text);
           expect(res.status).to.equal(200);
-          expect(!!res.text).to.equal(true);
+          expect(res.text).to.not.equal(true);
           done();
         });
       });
