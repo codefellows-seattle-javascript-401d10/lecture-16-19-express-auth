@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
-    "bcrypt": "0.8.7",
+    "bcrypt": "^0.8.7",
     "bluebird": "3.4.6",
     "body-parser": "1.15.2",
     "cors": "2.8.1",
