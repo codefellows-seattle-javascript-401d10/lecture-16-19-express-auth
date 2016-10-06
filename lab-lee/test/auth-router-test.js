@@ -1,10 +1,13 @@
 'use strict';
 
+require('./lib/aws-mocks');
+
 // npm modules
 const expect = require('chai').expect;
 const request = require('superagent');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
+// const AWS = require('aws-sdk-mock');
 
 // app modules
 const User = require('../model/user');

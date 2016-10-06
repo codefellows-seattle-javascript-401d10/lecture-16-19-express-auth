@@ -1,13 +1,14 @@
 'use strict';
 
-// node modules
-// const fs = require('fs');
+const awsMocks = require('./lib/aws-mocks');
 
+// node modules
 // npm modules
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
 const debug = require('debug')('leegram:pic-router-test');
+
 
 // app modules
 const User = require('../model/user.js');
@@ -110,6 +111,7 @@ describe('testing pic router', function() {
           expect(res.body.name).to.equal(examplePic.name);
           expect(res.body.desc).to.equal(examplePic.desc);
           expect(res.body.galleryID).to.equal(this.tempGallery._id.toString());
+          expect(res.body.objectKey).to.equal(awsMocks.uploadMock.Key);
           done();
         })
         .catch(done);
@@ -117,59 +119,4 @@ describe('testing pic router', function() {
     });
   });
 
-  // describe('testing DELETE /api/gallery/:galleryID/pic/:picID', function() {
-  //
-  //   describe('with valid token and data', function() {
-  //
-  //     before( done => {
-  //       debug('create mock User');
-  //       new User(exampleUser)
-  //       .generatePasswordHash(exampleUser.password)
-  //       .then( user => user.save())
-  //       .then( user => {
-  //         this.tempUser = user;
-  //         return user.generateToken();
-  //       })
-  //       .then( token => {
-  //         this.tempToken = token;
-  //         done();
-  //       })
-  //       .catch(done);
-  //     });
-  //
-  //     before( done => {
-  //       debug('create gallery');
-  //       exampleGallery.userID = this.tempUser._id.toString();
-  //       new Gallery(exampleGallery).save()
-  //       .then( gallery => {
-  //         this.tempGallery = gallery;
-  //         done();
-  //       })
-  //       .catch(done);
-  //     });
-  //
-  //     before( done => {
-  //       formRequest(`${url}/api/gallery/${this.tempGallery._id}/pic`, examplePic);
-  //       done();
-  //     });
-  //
-  //     after(() => {
-  //       debug('clean up userID from exampleGallery');
-  //       delete exampleGallery.userID;
-  //       delete examplePic.galleryID;
-  //     });
-  //
-  //     it('should return a pic', done => {
-  //       request.delete(`${url}/api/gallery/${this.tempGallery._id}/pic/${examplePic._id}`)
-  //       .set({
-  //         Authorization: `Bearer ${this.tempToken}`,
-  //       })
-  //       .end((err, res) => {
-  //         if (err) return done(err);
-  //         expect(res.status).to.equal(204);
-  //         done();
-  //       });
-  //     });
-  //   });
-  // });
 });

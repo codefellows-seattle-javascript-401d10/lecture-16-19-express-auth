@@ -62,6 +62,7 @@ picRouter.post('/api/gallery/:galleryID/pic', bearerAuth, upload.single('image')
   .then( () => s3UploadPromise(params))
   .catch(err => Promise.reject(createError(500, err.message)))
   .then(s3data => {
+    console.log(s3data);
     //upload the imageURI
     let picData = {
       name: req.body.name,
