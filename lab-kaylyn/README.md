@@ -42,9 +42,9 @@ npm run start
 
 The following is a list of endpoints for each of the routes:
 
-**Gallery Routes**
+## Gallery Routes
 
-**GET**
+## GET
 
 A valid GET request will return a 200 status code:
 ```
@@ -56,7 +56,7 @@ An invalid GET request will return a 404 status code for an invalid or not found
 http localhost:3000/api/gallery/1234
 ```
 
-**POST**
+## POST
 
 A valid POST request will return a 200 status code:
 ```
@@ -70,7 +70,7 @@ echo '{"name": 123, "desc": "Meet Pudge"}' | http localhost:3000/api/gallery/gal
 
 An unauthorized user will receive a 401 status code.
 
-**PUT**
+## PUT
 
 A valid PUT request will return a 200 status code:
 ```
@@ -84,7 +84,7 @@ echo '{"name": "", "desc": 1}' | http PUT localhost:3000/api/gallery/<gallery id
 
 An unauthorized user will receive a 401 status code.
 
-**DELETE**
+## DELETE
 
 A valid DELETE request will return a 204 status code (success without content):
 ```
@@ -96,7 +96,9 @@ An invalid DELETE request will return a 404 status code for invalid or not found
 http DELETE localhost:3000/api/gallery/123
 ```
 
-**Pic Routes**
+## Pic Routes
+
+## POST
 
 A valid POST request to upload a picture is sent via form request and will result in a 200 status code upon success:
 ```
