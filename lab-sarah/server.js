@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const debug = require('debug')('sarahgram:server');
 
 //app modules
+const picRouter = require('./route/pic-router.js');
 const authRouter = require('./route/auth-router.js');
 const galleryRouter = require('./route/gallery-router.js');
 const errorMiddleware = require('./lib/error-middleware.js');
@@ -32,6 +33,7 @@ app.use(morgan('dev'));
 //app routes
 app.use(authRouter);
 app.use(galleryRouter);
+app.use(picRouter);
 app.use(errorMiddleware);
 
 //start server
