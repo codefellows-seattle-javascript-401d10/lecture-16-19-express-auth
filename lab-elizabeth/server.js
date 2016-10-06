@@ -10,8 +10,9 @@ const mongoose = require('mongoose');
 const debug = require('debug')('bookstagram:server');
 
 // app modules
+const picRouter = require('./route/pic-router');
 const authRouter = require('./route/auth-router');
-const galleryRouter = require('./route/gallery-router');
+const GalleryRouter = require('./route/gallery-router');
 const errorMiddleware = require('./lib/error-middleware');
 
 // load env vars
@@ -30,8 +31,9 @@ app.use(cors());
 app.use(morgan('dev'));
 
 // app routes
+app.use(picRouter);
 app.use(authRouter);
-app.use(galleryRouter);
+app.use(GalleryRouter);
 app.use(errorMiddleware);
 
 const server = module.exports = app.listen(PORT, () => {

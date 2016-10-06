@@ -10,7 +10,7 @@ const server = require('../server');
 const User = require('../model/user');
 const Gallery = require('../model/gallery');
 
-const url = `http://localhose:${process.env.PORT}`;
+const url = `http://localhost:${process.env.PORT}`;
 const exampleUser = {
   username: 'J.R.R.Tolkien',
   password: '1ring',

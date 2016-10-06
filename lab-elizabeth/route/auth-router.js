@@ -1,13 +1,17 @@
 'use strict';
 
-const Router = require('express').Router;
+// node modules
 const jsonParser = require('body-parser').json();
+
+// npm modules
 const debug = require('debug')('bookstagram:auth-router');
+
+// app modules
+const User = require('../model/user');
 const bearerAuth = require('../lib/bearer-auth-middleware');
 
-const User = require('../model/user');
-
-const authRouter = module.exports = Router();
+// module constants
+const authRouter = module.exports = require('express').Router();
 
 authRouter.post('/api/signup', jsonParser, function(req, res, next){
   debug('POST /api/signup');

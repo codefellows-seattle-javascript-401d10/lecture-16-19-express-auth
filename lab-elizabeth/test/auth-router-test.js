@@ -30,6 +30,7 @@ describe('testing auth-router', function(){
       });
       return;
     }
+    done();
   });
 
   after(done => {
