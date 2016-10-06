@@ -1,0 +1,41 @@
+{
+  "name": "lecture-16-19-express-auth",
+  "version": "1.0.0",
+  "description": "![cf](https://i.imgur.com/7v5ASc8.png) lab 16 express authorization ======",
+  "main": "index.js",
+  "scripts": {
+    "test": "DEGUB=logan* ./node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loganlsr/lecture-16-19-express-auth.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loganlsr/lecture-16-19-express-auth/issues"
+  },
+  "homepage": "https://github.com/loganlsr/lecture-16-19-express-auth#readme",
+  "dependencies": {
+    "aws-sdk": "^2.6.6",
+    "bcrypt": "^0.8.7",
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "debug": "^2.2.0",
+    "dotenv": "^2.0.0",
+    "express": "^4.14.0",
+    "form-data": "^2.1.1",
+    "http-errors": "^1.5.0",
+    "jsonwebtoken": "^7.1.9",
+    "mongoose": "^4.6.2",
+    "morgan": "^1.7.0",
+    "multer": "^1.2.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.1.0",
+    "superagent": "^2.3.0"
+  }
+}
