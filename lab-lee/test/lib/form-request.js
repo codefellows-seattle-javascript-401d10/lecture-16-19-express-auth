@@ -19,8 +19,7 @@ module.exports = function(url, params) {
       res.on('data', data => json += data.toString());
       res.on('end', () => {
         try {
-          let result = JSON.parse(json);
-          res.body = result;
+          res.body = JSON.parse(json);
           resolve(res);
         } catch(err) {
           reject(err);

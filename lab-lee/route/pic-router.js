@@ -23,7 +23,6 @@ const picRouter = module.exports = require('express').Router();
 
 picRouter.post('/api/gallery/:galleryID/pic', upload.single('image'), function(req, res, next) {
   debug('POST /api/gallery/:galleryID/pic');
-  console.log('req.file', req.file);
   if(!req.file)
     return next(createError(400, 'no file found'));//can multer find?
   if(!req.file.path)
@@ -38,14 +37,14 @@ picRouter.post('/api/gallery/:galleryID/pic', upload.single('image'), function(r
     Body: fs.createReadStream(req.file.path),
   };
 
-  s3.upload(params, function(err, s3data){
+  s3.upload(params, function(err, data){
     if(err) return next(err);
     Gallery.findById(req.params.galleryID)
     .then( gallery => {
       let picData = {
         name: req.body.name,
         desc: req.body.desc,
-        imageURI: s3data.Location,
+        imageURI: data.Location,
         galleryID: gallery._id,
       };
       return new Pic(picData).save();
@@ -53,4 +52,27 @@ picRouter.post('/api/gallery/:galleryID/pic', upload.single('image'), function(r
     .then( pic => res.json(pic))
     .catch(next);
   });
+});
+
+picRouter.delete('/api/gallery/:galleryID/pic/:picID', function(req, res, next) {
+
+  debug('DELETE /api/gallery/:galleryID/:picID');
+
+  if(!req.params.picID)
+    return next(createError(400, 'bad request'));
+
+  let params = {
+    Bucket: 'leegram-assets',
+    Delete: {
+      Objects: [
+        {
+          Key: `${req.params.picID}.jpg`,
+        },
+      ],
+    },
+  };
+  Pic.findByIdAndRemove(req.params.picID)
+  .then( () => s3.deleteObject(params))
+  .then( () => res.sendStatus(204))
+  .catch( err => next(createError(404, err.message)));
 });
