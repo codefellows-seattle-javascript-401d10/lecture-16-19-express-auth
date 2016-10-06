@@ -255,8 +255,8 @@ describe('test /api/gallery', function(){
 
   describe('testing PUT to /api/gallery/:id', () => {
 
-  before(done => {
-    new User(exampleUser)
+    before(done => {
+      new User(exampleUser)
     .generatePasswordHash(exampleUser.password)
     .then( user => user.save())
     .then( user => {
@@ -268,21 +268,21 @@ describe('test /api/gallery', function(){
       done();
     })
     .catch(done);
-  });
+    });
 
-  before( done => {
-    exampleGallery.userID = this.tempUser._id.toString();
-    new Gallery(exampleGallery).save()
+    before( done => {
+      exampleGallery.userID = this.tempUser._id.toString();
+      new Gallery(exampleGallery).save()
     .then( gallery => {
       this.tempGallery = gallery;
       done();
     })
     .catch(done);
-  });
+    });
 
-  describe('Testing PUT /api/gallery/:id  with valid id', () => {
-    it('should PUT a gallery with valid id', done => {
-      request.put(`${url}/api/gallery/${this.tempGallery._id}`)
+    describe('Testing PUT /api/gallery/:id  with valid id', () => {
+      it('should PUT a gallery with valid id', done => {
+        request.put(`${url}/api/gallery/${this.tempGallery._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`,
       })
@@ -294,8 +294,8 @@ describe('test /api/gallery', function(){
         expect(err).to.be.null;
         done();
       });
+      });
     });
-  });
   
-});
+  });
 });
