@@ -107,7 +107,7 @@ describe('test /api/gallery', function(){
       });
       });
     });
-    
+
     describe('Testing if no body or id was provided', function() {
       before(done => {
         new User(exampleUser)
@@ -123,7 +123,7 @@ describe('test /api/gallery', function(){
       })
       .catch(done);
       });
-      
+
       it('should return 400', done => {
         request.post(`${url}/api/gallery`)
         .send({wrongProperty:'1' })
@@ -189,9 +189,6 @@ describe('test /api/gallery', function(){
     describe('Testing if no token was provided ', () => {
       it('should return 401 ', done => {
         request.get(`${url}/api/gallery/${this.tempGallery._id}`)
-        .set({
-          Authorization: `Bearer ${''}`,
-        })
         .end((err, res) => {
           expect(res.status).to.equal(401);
           done();
@@ -214,7 +211,7 @@ describe('test /api/gallery', function(){
   });
 
   describe('testing DELETE to /api/gallery/:id', () => {
-    
+
     before(done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -254,51 +251,51 @@ describe('test /api/gallery', function(){
         });
       });
     });
-  }); 
+  });
 
   describe('testing PUT to /api/gallery/:id', () => {
-    
-    before(done => {
-      new User(exampleUser)
-      .generatePasswordHash(exampleUser.password)
-      .then( user => user.save())
-      .then( user => {
-        this.tempUser = user;
-        return user.generateToken();
-      })
-      .then( token => {
-        this.tempToken = token;
-        done();
-      })
-      .catch(done);
-    });
 
-    before( done => {
-      exampleGallery.userID = this.tempUser._id.toString();
-      new Gallery(exampleGallery).save()
-      .then( gallery => {
-        this.tempGallery = gallery;
-        done();
-      })
-      .catch(done);
-    });
+  before(done => {
+    new User(exampleUser)
+    .generatePasswordHash(exampleUser.password)
+    .then( user => user.save())
+    .then( user => {
+      this.tempUser = user;
+      return user.generateToken();
+    })
+    .then( token => {
+      this.tempToken = token;
+      done();
+    })
+    .catch(done);
+  });
 
-    describe('Testing PUT /api/gallery/:id  with valid id', () => {
-      it('should PUT a gallery with valid id', done => {
-        request.put(`${url}/api/gallery/${this.tempGallery._id}`)
-        .set({
-          Authorization: `Bearer ${this.tempToken}`,
-        })
-        .send({name:'rozi', desc:'hey I am updated'})
-        .end((err, res) => {
-          console.log('------------------>',res.body);
-          if(err) done(err);
-          expect(res.status).to.equal(200);
-          expect(res.text.name).to.equal('rozi');
-          expect(err).to.be.null;
-          done();
-        });
+  before( done => {
+    exampleGallery.userID = this.tempUser._id.toString();
+    new Gallery(exampleGallery).save()
+    .then( gallery => {
+      this.tempGallery = gallery;
+      done();
+    })
+    .catch(done);
+  });
+
+  describe('Testing PUT /api/gallery/:id  with valid id', () => {
+    it('should PUT a gallery with valid id', done => {
+      request.put(`${url}/api/gallery/${this.tempGallery._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`,
+      })
+      .send({name:'rozi', desc:'hey I am updated'})
+      .end((err, res) => {
+        if(err) done(err);
+        expect(res.status).to.equal(200);
+        expect(res.body.name).to.equal('rozi');
+        expect(err).to.be.null;
+        done();
       });
     });
-  }); 
+  });
+  
+});
 });

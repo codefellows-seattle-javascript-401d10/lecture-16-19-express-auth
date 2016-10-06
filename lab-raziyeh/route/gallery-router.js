@@ -48,10 +48,10 @@ galleryRouter.delete('/api/gallery/:id', bearerAuth, function(req, res, next){
 
 galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req, res, next){
   debug('PUT /api/gallery');
-  
+
   Gallery.findById(req.params.id)
   .then( gallery => {
-    if(gallery.userID.toString() === req.user._id.toString())
+    if(gallery.userID.toString() !== req.user._id.toString())
       return next(createError(401, 'invalid userid'));
     return Gallery.findByIdAndUpdate( gallery._id, req.body, {new:true});
   })
