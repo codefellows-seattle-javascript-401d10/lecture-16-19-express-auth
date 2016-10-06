@@ -32,10 +32,9 @@
 # server endpoints
 * a `POST` request but you choose your endpoint path :)
 
-## Tests 
+## Tests
 * `POST` - 200 test
 
 ## Bonus
 * 1pt - have a one to many relation ship with your model from yesterday
 * 2pt - have a delete route and test that removes your model from S3
-
