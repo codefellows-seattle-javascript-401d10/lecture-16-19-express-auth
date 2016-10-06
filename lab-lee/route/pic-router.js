@@ -38,8 +38,8 @@ picRouter.post('/api/gallery/:galleryID/pic', upload.single('image'), function(r
   };
 
   s3.upload(params, function(err, data){
-    if(err) return next(err);
-    Gallery.findById(req.params.galleryID)
+    if(err) return next(err); //500 error because our fault
+    Gallery.findById(req.params.galleryID) //checks if a gallery exists
     .then( gallery => {
       let picData = {
         name: req.body.name,

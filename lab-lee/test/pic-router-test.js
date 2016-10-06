@@ -1,11 +1,11 @@
 'use strict';
 
 // node modules
-const fs = require('fs');
+// const fs = require('fs');
 
 // npm modules
 const expect = require('chai').expect;
-// const request = require('superagent');
+const request = require('superagent');
 const mongoose = require('mongoose');
 const debug = require('debug')('leegram:pic-router-test');
 
@@ -13,7 +13,6 @@ const debug = require('debug')('leegram:pic-router-test');
 const User = require('../model/user.js');
 const Gallery = require('../model/gallery.js');
 const Pic = require('../model/pic.js');
-const formRequest = require('./lib/form-request');
 
 // variable constants
 const server = require('../server.js');
@@ -33,7 +32,7 @@ const exampleGallery = {
 const examplePic = {
   name: 'partyfun',
   desc: 'sofun',
-  image: fs.createReadStream(`${__dirname}/data/hufflepuff.jpg`),
+  image: `${__dirname}/data/hufflepuff.jpg`,
 };
 
 // config
@@ -115,7 +114,13 @@ describe('testing pic router', function() {
       });
 
       it('should return a pic', done => {
-        formRequest(`${url}/api/gallery/${this.tempGallery._id}/pic`, examplePic)
+        request.post(`${url}/api/gallery/${this.tempGallery._id}/pic`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`,
+        })
+        .field('name', examplePic.name)
+        .field('desc', examplePic.desc)
+        .attach('image', examplePic.image)
         .then( res => {
           expect(res.statusCode).to.equal(200);
           expect(res.body.name).to.equal(examplePic.name);
