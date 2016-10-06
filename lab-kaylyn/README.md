@@ -44,7 +44,7 @@ The following is a list of endpoints for each of the routes:
 
 **Gallery Routes**
 
-GET
+**GET**
 
 A valid GET request will return a 200 status code:
 ```
@@ -56,11 +56,49 @@ An invalid GET request will return a 404 status code for an invalid or not found
 http localhost:3000/api/gallery/1234
 ```
 
-POST
+**POST**
 
 A valid POST request will return a 200 status code:
 ```
-echo '{"name": "Pudge the Cat", "desc": "Meet Pudge", "created": "<current time>"}' | http localhost:3000/api/gallery/gallery
+echo '{"name": "Pudge the Cat", "desc": "Meet Pudge"}' | http localhost:3000/api/gallery/gallery
 ```
 
-An invalid POST 
+An invalid POST will return a 400 status code for invalid or missing body:
+```
+echo '{"name": 123, "desc": "Meet Pudge"}' | http localhost:3000/api/gallery/gallery
+```
+
+An unauthorized user will receive a 401 status code.
+
+**PUT**
+
+A valid PUT request will return a 200 status code:
+```
+echo '{"name": "Smudge the Cat", "desc": "Meet Smudge"}' | http PUT localhost:3000/api/gallery/<gallery id>
+```
+
+An invalid PUT request will return a 400 status code for invalid or missing body:
+```
+echo '{"name": "", "desc": 1}' | http PUT localhost:3000/api/gallery/<gallery id>
+```
+
+An unauthorized user will receive a 401 status code.
+
+**DELETE**
+
+A valid DELETE request will return a 204 status code (success without content):
+```
+http DELETE localhost:3000/api/gallery/<gallery id>
+```
+
+An invalid DELETE request will return a 404 status code for invalid or not found id:
+```
+http DELETE localhost:3000/api/gallery/123
+```
+
+**Pic Routes**
+
+A valid POST request to upload a picture is sent via form request and will result in a 200 status code upon success:
+```
+http POST localhost:3000/api/gallery/<gallery id>/pic
+```
