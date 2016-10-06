@@ -13,6 +13,7 @@ const debug = require('debug')('leegram:pic-router-test');
 const User = require('../model/user.js');
 const Gallery = require('../model/gallery.js');
 const Pic = require('../model/pic.js');
+const serverControl = require('./lib/server-control');
 
 // variable constants
 const server = require('../server.js');
@@ -41,29 +42,12 @@ mongoose.Promise = Promise;
 describe('testing pic router', function() {
 
   before(done => {
-    if (!server.isRunning){
-      server.listen(process.env.PORT, () => {
-        server.isRunning = true;
-        debug('server up');
-        done();
-      });
-      return;
-    }
-    done();
+    serverControl.serverUp(server, done);
   });
 
   // Turn server off before tests
   after(done => {
-    if (server.isRunning) {
-      server.close(err => {
-        if (err) return done(err);
-        server.isRunning = false;
-        debug('server down');
-        done();
-      });
-      return;
-    }
-    done();
+    serverControl.serverDown(server, done);
   });
 
   afterEach(done => {
