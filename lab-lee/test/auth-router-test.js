@@ -1,13 +1,17 @@
 'use strict';
 
+require('./lib/aws-mocks');
+
 // npm modules
 const expect = require('chai').expect;
 const request = require('superagent');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
+// const AWS = require('aws-sdk-mock');
 
 // app modules
 const User = require('../model/user');
+const serverControl = require('./lib/server-control');
 
 mongoose.Promise = Promise;
 
@@ -25,31 +29,12 @@ const exampleUser = {
 
 describe('testing auth-router', function() {
 
-  // Turn server on before tests
   before(done => {
-    if (!server.isRunning){
-      server.listen(process.env.PORT, () => {
-        server.isRunning = true;
-        console.log('server up');
-        done();
-      });
-      return;
-    }
-    done();
+    serverControl.serverUp(server, done);
   });
-
   // Turn server off before tests
   after(done => {
-    if (server.isRunning) {
-      server.close(err => {
-        if (err) return done(err);
-        server.isRunning = false;
-        console.log('server down');
-        done();
-      });
-      return;
-    }
-    done();
+    serverControl.serverDown(server, done);
   });
 
   describe('testing POST /api/signup', function() {

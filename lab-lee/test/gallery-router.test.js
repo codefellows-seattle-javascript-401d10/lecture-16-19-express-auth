@@ -1,15 +1,19 @@
 'use strict';
 
+require('./lib/aws-mocks');
+
 // npm modules
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
+// const AWS = require('aws-sdk-mock');
 
 // app modules
 const server = require('../server.js');
 const User = require('../model/user.js');
 const Gallery = require('../model/gallery.js');
+const serverControl = require('./lib/server-control');
 
 // variable constants
 const url = `http://localhost:${process.env.PORT}`;
@@ -38,29 +42,11 @@ describe('Testing /api/gallery routes', function() {
 
   // Turn server on before tests
   before(done => {
-    if (!server.isRunning){
-      server.listen(process.env.PORT, () => {
-        server.isRunning = true;
-        console.log('server up');
-        done();
-      });
-      return;
-    }
-    done();
+    serverControl.serverUp(server, done);
   });
-
   // Turn server off before tests
-  after( done => {
-    if (server.isRunning) {
-      server.close(err => {
-        if (err) return done(err);
-        server.isRunning = false;
-        console.log('server down');
-        done();
-      });
-      return;
-    }
-    done();
+  after(done => {
+    serverControl.serverDown(server, done);
   });
 
   afterEach(done => {

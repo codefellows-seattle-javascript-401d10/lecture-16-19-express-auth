@@ -1,19 +1,19 @@
 'use strict';
 
-// node modules
-const fs = require('fs');
+const awsMocks = require('./lib/aws-mocks');
 
+// node modules
 // npm modules
 const expect = require('chai').expect;
-// const request = require('superagent');
-const mongoose = require('mongoose');
+const request = require('superagent');
 const debug = require('debug')('leegram:pic-router-test');
+
 
 // app modules
 const User = require('../model/user.js');
 const Gallery = require('../model/gallery.js');
 const Pic = require('../model/pic.js');
-const formRequest = require('./lib/form-request');
+const serverControl = require('./lib/server-control');
 
 // variable constants
 const server = require('../server.js');
@@ -33,38 +33,28 @@ const exampleGallery = {
 const examplePic = {
   name: 'partyfun',
   desc: 'sofun',
-  image: fs.createReadStream(`${__dirname}/data/hufflepuff.jpg`),
+  image: `${__dirname}/data/hufflepuff.jpg`,
+};
+
+const examplePicData = {
+  name: 'partyfun',
+  desc: 'sofun',
+  imageURI: awsMocks.uploadMock.Location,
+  objectKey: awsMocks.uploadMock.Key,
+  created: new Date(),
 };
 
 // config
-mongoose.Promise = Promise;
 
 describe('testing pic router', function() {
 
   before(done => {
-    if (!server.isRunning){
-      server.listen(process.env.PORT, () => {
-        server.isRunning = true;
-        debug('server up');
-        done();
-      });
-      return;
-    }
-    done();
+    serverControl.serverUp(server, done);
   });
 
   // Turn server off before tests
   after(done => {
-    if (server.isRunning) {
-      server.close(err => {
-        if (err) return done(err);
-        server.isRunning = false;
-        debug('server down');
-        done();
-      });
-      return;
-    }
-    done();
+    serverControl.serverDown(server, done);
   });
 
   afterEach(done => {
@@ -115,12 +105,19 @@ describe('testing pic router', function() {
       });
 
       it('should return a pic', done => {
-        formRequest(`${url}/api/gallery/${this.tempGallery._id}/pic`, examplePic)
+        request.post(`${url}/api/gallery/${this.tempGallery._id}/pic`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`,
+        })
+        .field('name', examplePic.name)
+        .field('desc', examplePic.desc)
+        .attach('image', examplePic.image)
         .then( res => {
-          expect(res.statusCode).to.equal(200);
+          expect(res.status).to.equal(200);
           expect(res.body.name).to.equal(examplePic.name);
           expect(res.body.desc).to.equal(examplePic.desc);
           expect(res.body.galleryID).to.equal(this.tempGallery._id.toString());
+          expect(res.body.objectKey).to.equal(awsMocks.uploadMock.Key);
           done();
         })
         .catch(done);
@@ -128,59 +125,68 @@ describe('testing pic router', function() {
     });
   });
 
-  // describe('testing DELETE /api/gallery/:galleryID/pic/:picID', function() {
-  //
-  //   describe('with valid token and data', function() {
-  //
-  //     before( done => {
-  //       debug('create mock User');
-  //       new User(exampleUser)
-  //       .generatePasswordHash(exampleUser.password)
-  //       .then( user => user.save())
-  //       .then( user => {
-  //         this.tempUser = user;
-  //         return user.generateToken();
-  //       })
-  //       .then( token => {
-  //         this.tempToken = token;
-  //         done();
-  //       })
-  //       .catch(done);
-  //     });
-  //
-  //     before( done => {
-  //       debug('create gallery');
-  //       exampleGallery.userID = this.tempUser._id.toString();
-  //       new Gallery(exampleGallery).save()
-  //       .then( gallery => {
-  //         this.tempGallery = gallery;
-  //         done();
-  //       })
-  //       .catch(done);
-  //     });
-  //
-  //     before( done => {
-  //       formRequest(`${url}/api/gallery/${this.tempGallery._id}/pic`, examplePic);
-  //       done();
-  //     });
-  //
-  //     after(() => {
-  //       debug('clean up userID from exampleGallery');
-  //       delete exampleGallery.userID;
-  //       delete examplePic.galleryID;
-  //     });
-  //
-  //     it('should return a pic', done => {
-  //       request.delete(`${url}/api/gallery/${this.tempGallery._id}/pic/${examplePic._id}`)
-  //       .set({
-  //         Authorization: `Bearer ${this.tempToken}`,
-  //       })
-  //       .end((err, res) => {
-  //         if (err) return done(err);
-  //         expect(res.status).to.equal(204);
-  //         done();
-  //       });
-  //     });
-  //   });
-  // });
+  describe('testing DELETE /api/gallery/:galleryID/pic/:picID', function() {
+
+    describe('with valid token and data', function() {
+
+      before( done => {
+        debug('create mock User');
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save())
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+
+      before( done => {
+        debug('create gallery');
+        exampleGallery.userID = this.tempUser._id.toString();
+        new Gallery(exampleGallery).save()
+        .then( gallery => {
+          this.tempGallery = gallery;
+          done();
+        })
+        .catch(done);
+      });
+
+      before( done => {
+        debug('create pic');
+        examplePicData.userID = this.tempUser._id.toString();
+        examplePicData.galleryID = this.tempGallery._id.toString();
+        new Pic(examplePicData).save()
+        .then( pic => {
+          this.tempPic = pic;
+          done();
+        })
+        .catch(done);
+      });
+
+      after(() => {
+        debug('clean up userID from exampleGallery');
+        delete exampleGallery.userID;
+        delete examplePicData.userID;
+        delete examplePicData.galleryID;
+      });
+
+      it('should return a pic', done => {
+        request.delete(`${url}/api/gallery/${this.tempGallery._id}/pic/${this.tempPic._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`,
+        })
+        .then( res => {
+          expect(res.status).to.equal(204);
+          done();
+        })
+        .catch(done);
+      });
+    });
+  });
+
 });
