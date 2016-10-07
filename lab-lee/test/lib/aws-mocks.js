@@ -13,6 +13,7 @@ exports.uploadMock = {
   Bucket: 'leegram-assets',
 };
 
+
 AWS.mock('S3', 'upload', function(params, callback) {
   if (params.ACL !== 'public-read')
     return callback(new Error('ACL must be public read'));
@@ -23,4 +24,17 @@ AWS.mock('S3', 'upload', function(params, callback) {
   if (!params.Body)
     return callback(new Error('requires Body'));
   callback(null, exports.uploadMock);
+});
+
+exports.deleteMock = {
+  DeleteMarker: 'true',
+  VersionId: 'f8t0ZeX1wdfdv5hY6.kP0a7Eitn5ZVES',
+};
+
+AWS.mock('S3', 'deleteObject', function(params, callback) {
+  if (params.Bucket !== 'leegram-assets')
+    return callback(new Error('Bucket must be leegram-assets'));
+  if (!params.Key)
+    return callback(new Error('requires Key'));
+  callback(null, exports.deleteMock);
 });

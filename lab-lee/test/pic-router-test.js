@@ -6,7 +6,6 @@ const awsMocks = require('./lib/aws-mocks');
 // npm modules
 const expect = require('chai').expect;
 const request = require('superagent');
-const mongoose = require('mongoose');
 const debug = require('debug')('leegram:pic-router-test');
 
 
@@ -37,8 +36,15 @@ const examplePic = {
   image: `${__dirname}/data/hufflepuff.jpg`,
 };
 
+const examplePicData = {
+  name: 'partyfun',
+  desc: 'sofun',
+  imageURI: awsMocks.uploadMock.Location,
+  objectKey: awsMocks.uploadMock.Key,
+  created: new Date(),
+};
+
 // config
-mongoose.Promise = Promise;
 
 describe('testing pic router', function() {
 
@@ -107,11 +113,75 @@ describe('testing pic router', function() {
         .field('desc', examplePic.desc)
         .attach('image', examplePic.image)
         .then( res => {
-          expect(res.statusCode).to.equal(200);
+          expect(res.status).to.equal(200);
           expect(res.body.name).to.equal(examplePic.name);
           expect(res.body.desc).to.equal(examplePic.desc);
           expect(res.body.galleryID).to.equal(this.tempGallery._id.toString());
           expect(res.body.objectKey).to.equal(awsMocks.uploadMock.Key);
+          done();
+        })
+        .catch(done);
+      });
+    });
+  });
+
+  describe('testing DELETE /api/gallery/:galleryID/pic/:picID', function() {
+
+    describe('with valid token and data', function() {
+
+      before( done => {
+        debug('create mock User');
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save())
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+
+      before( done => {
+        debug('create gallery');
+        exampleGallery.userID = this.tempUser._id.toString();
+        new Gallery(exampleGallery).save()
+        .then( gallery => {
+          this.tempGallery = gallery;
+          done();
+        })
+        .catch(done);
+      });
+
+      before( done => {
+        debug('create pic');
+        examplePicData.userID = this.tempUser._id.toString();
+        examplePicData.galleryID = this.tempGallery._id.toString();
+        new Pic(examplePicData).save()
+        .then( pic => {
+          this.tempPic = pic;
+          done();
+        })
+        .catch(done);
+      });
+
+      after(() => {
+        debug('clean up userID from exampleGallery');
+        delete exampleGallery.userID;
+        delete examplePicData.userID;
+        delete examplePicData.galleryID;
+      });
+
+      it('should return a pic', done => {
+        request.delete(`${url}/api/gallery/${this.tempGallery._id}/pic/${this.tempPic._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`,
+        })
+        .then( res => {
+          expect(res.status).to.equal(204);
           done();
         })
         .catch(done);
