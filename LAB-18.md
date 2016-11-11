@@ -11,7 +11,7 @@
 * create a package.json that lists all dependencies and developer dependencies
 * include an .eslintrc
 * include a .gitignore
-* incldue a readme with a project description
+* include a readme with a project description
 * include npm scripts
  * test - to run mocha
  * start - to start the server
@@ -26,7 +26,7 @@
 * create a test that uploads one of these files to your route using form-data
 * use multer to parse the request
 * upload the file to S3
-* create a new insance of your mongoose model storing the URI to your file on s3
+* create a new instance of your mongoose model storing the URI to your file on s3
 * respond to the client with the model stored in your mongo database
 
 # server endpoints
