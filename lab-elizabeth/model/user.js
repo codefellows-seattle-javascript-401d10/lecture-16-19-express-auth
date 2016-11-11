@@ -13,7 +13,7 @@ const Schema = mongoose.Schema;
 
 const userSchema = Schema({
   username: {type: String, required: true, unique: true},
-  email: {type: String, required:true, unique: true},
+  email: {type: String, required: true, unique: true},
   password: {type: String, required: true},
   findHash: {type: String, unique: true},
 });
@@ -21,6 +21,7 @@ const userSchema = Schema({
 userSchema.methods.generatePasswordHash = function(password){
   debug('generatePasswordHash');
   return new Promise((resolve, reject) => {
+    if(!password) return reject(createError(400, 'requires password'));
     bcrypt.hash(password, 10, (err, hash) => {
       if(err) return reject(err);
       this.password = hash;

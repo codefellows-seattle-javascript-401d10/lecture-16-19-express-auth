@@ -48,7 +48,6 @@ describe('testing auth-router', function(){
   });
 
   describe('POST /api/signup', function(){
-
     describe('with valid body', function(){
 
       after(done => {
@@ -69,12 +68,60 @@ describe('testing auth-router', function(){
           done();
         });
       });
+    });
+
+    describe('with invalid body', function(){
+
+      after(done => {
+        debug('removing user');
+        User.remove({})
+        .then(() => done())
+        .catch(done);
+      });
+
+      afterEach(done => {
+        debug('resetting exampleUser');
+        exampleUser.username = 'J.R.R.Tolkien';
+        exampleUser.password = '1ring';
+        exampleUser.email = 'hobbits@theshire.middleearth';
+        done();
+      });
+
+      it('should return status: 401', done => {
+        exampleUser.username = null;
+        request.post(`${url}/api/signup`)
+        .send(exampleUser)
+        .end((err) => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+
+      it('should return status: 401', done => {
+        exampleUser.password = null;
+        request.post(`${url}/api/signup`)
+        .send(exampleUser)
+        .end((err) => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+
+      it('should return status: 401', done => {
+        exampleUser.email = null;
+        request.post(`${url}/api/signup`)
+        .send(exampleUser)
+        .end((err) => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
 
     });
 
   });
 
-  describe('GET /api/signup', function(){
+  describe('GET /api/login', function(){
 
     describe('with valid body', function(){
 
@@ -98,11 +145,11 @@ describe('testing auth-router', function(){
       });
 
       it('should return a token', done => {
-        request.get(`${url}/api.login`)
+        request.get(`${url}/api/login`)
         .auth('J.R.R.Tolkien', '1ring')
         .end((err, res) => {
           if(err) return done(err);
-          debug('res.text', res.text);
+          debug('res', res);
           expect(res.status).to.equal(200);
           expect(res.text).to.not.equal(true);
           done();

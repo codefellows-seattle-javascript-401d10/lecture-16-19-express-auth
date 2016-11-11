@@ -25,5 +25,6 @@ module.exports = function(req, res, next){
     return next(createError(401, 'basic auth requires username'));
   if(!req.auth.password)
     return next(createError(401, 'basic auth requires password'));
+    
   next();
 };

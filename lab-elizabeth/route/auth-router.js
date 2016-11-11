@@ -8,7 +8,7 @@ const debug = require('debug')('bookstagram:auth-router');
 
 // app modules
 const User = require('../model/user');
-const bearerAuth = require('../lib/bearer-auth-middleware');
+const basicAuth = require('../lib/basic-auth-middleware');
 
 // module constants
 const authRouter = module.exports = require('express').Router();
@@ -21,15 +21,18 @@ authRouter.post('/api/signup', jsonParser, function(req, res, next){
   let user = new User(req.body);
 
   user.generatePasswordHash(password)
-  .then(user => user.save())
+  .then(user => {
+    debug('generating password hash', user);
+    return user.save();
+  })
   .then(user => user.generateToken())
   .then(token => res.send(token))
   .catch(next);
 });
 
-authRouter.get('/api/login', bearerAuth, function(req, res, next){
+authRouter.get('/api/login', basicAuth, function(req, res, next){
   debug('GET /api/login');
-
+  console.log('req.auth', req.auth);
   User.findOne({username: req.auth.username})
   .then(user => user.comparePasswordHash(req.auth.password))
   .then(user => user.generateToken())
