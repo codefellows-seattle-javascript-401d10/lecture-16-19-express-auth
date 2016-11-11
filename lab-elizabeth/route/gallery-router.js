@@ -34,6 +34,7 @@ galleryRouter.get('/api/gallery/:id', bearerAuth, function(req, res, next){
 
 galleryRouter.post('/api/gallery', bearerAuth, jsonParser, function(req, res, next){
   debug('POST /api/gallery');
+  if(!req.user) return next(createError(400, 'gallery required'));
   req.body.userID = req.user._id;
   new Gallery(req.body).save()
   .then(gallery => res.json(gallery))
@@ -42,9 +43,10 @@ galleryRouter.post('/api/gallery', bearerAuth, jsonParser, function(req, res, ne
 
 galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req, res, next){
   debug('PUT /api/gallery/:id');
+  if(!req.user) return next(createError(400, 'gallery required'));
   Gallery.findById(req.params.id)
   .then(gallery => {
-    if(gallery.userID.toString !== req.user._id.toString()) return next(createError(401, 'invalid id'));
+    if(gallery.userID.toString() !== req.user._id.toString()) return next(createError(401, 'invalid id'));
     return Gallery.findByIdAndUpdate(req.params.id, req.body, {new: true});
   })
   .then(gallery => {

@@ -4,8 +4,8 @@
   "description": "lab-16-19-express-auth",
   "main": "server.js",
   "scripts": {
-    "test": "DEBUG='bookstagram' ./node_modules/mocha/bin/mocha",
-    "start": "DEBUG='bookstagram' node server.js",
+    "test": "DEBUG='book*' ./node_modules/mocha/bin/mocha",
+    "start": "DEBUG='book*' node server.js",
     "lint": "./node_modules/eslint/bin/eslint.js"
   },
   "repository": {

@@ -7,7 +7,7 @@ const debug = require('debug')('bookstagram:bearer-auth-middleware');
 const User = require('../model/user');
 
 module.exports = function(req, res, next){
-  debug();
+  debug('bearerAuth');
   let authHeader = req.headers.authorization;
   if(!authHeader)
     return next(createError(401, 'requires auth header'));

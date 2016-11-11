@@ -88,7 +88,7 @@ describe('testing auth-router', function(){
       });
 
       it('should return status: 400', done => {
-        exampleUser.username = null;
+        exampleUser.username = '';
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err) => {
@@ -98,7 +98,7 @@ describe('testing auth-router', function(){
       });
 
       it('should return status: 400', done => {
-        exampleUser.password = null;
+        exampleUser.password = '';
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err) => {
@@ -108,7 +108,7 @@ describe('testing auth-router', function(){
       });
 
       it('should return status: 400', done => {
-        exampleUser.email = null;
+        exampleUser.email = '';
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err) => {
@@ -118,8 +118,8 @@ describe('testing auth-router', function(){
       });
 
       it('should return status: 400', done => {
-        exampleUser.username = null;
-        exampleUser.password = null;
+        exampleUser.username = '';
+        exampleUser.password = '';
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err) => {
@@ -129,8 +129,8 @@ describe('testing auth-router', function(){
       });
 
       it('should return status: 400', done => {
-        exampleUser.username = null;
-        exampleUser.email = null;
+        exampleUser.username = '';
+        exampleUser.email = '';
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err) => {
@@ -140,8 +140,8 @@ describe('testing auth-router', function(){
       });
 
       it('should return status: 400', done => {
-        exampleUser.password = null;
-        exampleUser.email = null;
+        exampleUser.password = '';
+        exampleUser.email = '';
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err) => {
@@ -151,9 +151,9 @@ describe('testing auth-router', function(){
       });
 
       it('should return status: 400', done => {
-        exampleUser.username = null;
-        exampleUser.password = null;
-        exampleUser.email = null;
+        exampleUser.username = '';
+        exampleUser.password = '';
+        exampleUser.email = '';
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err) => {
