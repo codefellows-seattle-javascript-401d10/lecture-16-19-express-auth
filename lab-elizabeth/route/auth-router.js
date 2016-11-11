@@ -2,6 +2,7 @@
 
 // node modules
 const jsonParser = require('body-parser').json();
+const createError = require('http-errors');
 
 // npm modules
 const debug = require('debug')('bookstagram:auth-router');
@@ -32,9 +33,11 @@ authRouter.post('/api/signup', jsonParser, function(req, res, next){
 
 authRouter.get('/api/login', basicAuth, function(req, res, next){
   debug('GET /api/login');
-  console.log('req.auth', req.auth);
   User.findOne({username: req.auth.username})
-  .then(user => user.comparePasswordHash(req.auth.password))
+  .then(user => {
+    if (!user) return Promise.reject(createError(401, 'user not found'));
+    return user.comparePasswordHash(req.auth.password)
+  })
   .then(user => user.generateToken())
   .then(token => res.send(token))
   .catch(next);

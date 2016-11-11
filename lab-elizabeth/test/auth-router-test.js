@@ -87,7 +87,7 @@ describe('testing auth-router', function(){
         done();
       });
 
-      it('should return status: 401', done => {
+      it('should return status: 400', done => {
         exampleUser.username = null;
         request.post(`${url}/api/signup`)
         .send(exampleUser)
@@ -97,7 +97,7 @@ describe('testing auth-router', function(){
         });
       });
 
-      it('should return status: 401', done => {
+      it('should return status: 400', done => {
         exampleUser.password = null;
         request.post(`${url}/api/signup`)
         .send(exampleUser)
@@ -107,7 +107,52 @@ describe('testing auth-router', function(){
         });
       });
 
-      it('should return status: 401', done => {
+      it('should return status: 400', done => {
+        exampleUser.email = null;
+        request.post(`${url}/api/signup`)
+        .send(exampleUser)
+        .end((err) => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+
+      it('should return status: 400', done => {
+        exampleUser.username = null;
+        exampleUser.password = null;
+        request.post(`${url}/api/signup`)
+        .send(exampleUser)
+        .end((err) => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+
+      it('should return status: 400', done => {
+        exampleUser.username = null;
+        exampleUser.email = null;
+        request.post(`${url}/api/signup`)
+        .send(exampleUser)
+        .end((err) => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+
+      it('should return status: 400', done => {
+        exampleUser.password = null;
+        exampleUser.email = null;
+        request.post(`${url}/api/signup`)
+        .send(exampleUser)
+        .end((err) => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+
+      it('should return status: 400', done => {
+        exampleUser.username = null;
+        exampleUser.password = null;
         exampleUser.email = null;
         request.post(`${url}/api/signup`)
         .send(exampleUser)
@@ -158,6 +203,63 @@ describe('testing auth-router', function(){
 
     });
 
-  });
+    describe('with invalid body', function(){
 
+      before(done => {
+        debug('making user');
+        let user = new User(exampleUser);
+        user.generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempuser = user;
+          done();
+        })
+        .catch(done);
+      });
+
+      after(done => {
+        debug('removing user');
+        User.remove({})
+        .then(() => done())
+        .catch(done);
+      });
+
+      it('should return status: 401', done => {
+        request.get(`${url}/api/login`)
+        .auth('J.R.R.Tolkien', '')
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+
+      it('should return status: 401', done => {
+        request.get(`${url}/api/login`)
+        .auth('J.R.R.Tolkien', 'noRing')
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+
+      it('should return status: 401', done => {
+        request.get(`${url}/api/login`)
+        .auth('', '1ring')
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+
+      it('should return status: 401', done => {
+        request.get(`${url}/api/login`)
+        .auth('Gollum', 'hobbitsies')
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+
+    });
+  });
 });
