@@ -10,7 +10,8 @@ const debug = require('debug')('bookstagram:pic-router-test');
 // app modules
 const User = require('../model/user');
 const Gallery = require('../model/gallery');
-const formRequest = require('./lib/form-request');
+// const formRequest = require('./lib/form-request');
+const request = require('superagent');
 
 // module constants
 const server = require('../server');
@@ -30,7 +31,7 @@ const exampleGallery = {
 const examplePic = {
   name: 'map',
   desc: 'we do not want to get lost on this trip, we have to walk the whole way!',
-  image: fs.createReadStream(`${__dirname}/data/map.png`),
+  image: `${__dirname}/data/map.png`,
 };
 
 describe('testing pic-router', function(){
@@ -107,7 +108,11 @@ describe('testing pic-router', function(){
       });
 
       it('should return a pic', done => {
-        formRequest(`${url}/api/gallery/${this.tempGallery._id}/pic`, this.tempToken, examplePic)
+        request.post(`${url}/api/gallery/${this.tempGallery._id}/pic`)
+        .set({Authorization: `Bearer ${this.tempToken}`})
+        .field('name', examplePic.name)
+        .field('desc', examplePic.desc)
+        .attach('image', examplePic.image)
         .then(res => {
           console.log(res.body);
           expect(res.statusCode).to.equal(200);
