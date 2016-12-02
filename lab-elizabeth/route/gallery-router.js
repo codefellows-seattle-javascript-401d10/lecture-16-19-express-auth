@@ -14,16 +14,16 @@ const bearerAuth = require('../lib/bearer-auth-middleware');
 // module constants
 const galleryRouter = module.exports = require('express').Router();
 
-galleryRouter.delete('/api/gallery/:id', bearerAuth, function(req, res, next){
-  debug('DELETE /api/gallery/:id');
-  Gallery.findByIdAndRemove(req.params.id)
+galleryRouter.delete('/api/gallery/:galleryID', bearerAuth, function(req, res, next){
+  debug('DELETE /api/gallery/galleryID');
+  Gallery.findByIdAndRemove(req.params.galleryID)
   .then(() => res.status(204).send())
   .catch(err => next(createError(404, err.message)));
 });
 
-galleryRouter.get('/api/gallery/:id', bearerAuth, function(req, res, next){
-  debug('GET /api/gallery/:id');
-  Gallery.findById(req.params.id)
+galleryRouter.get('/api/gallery/:galleryID', bearerAuth, function(req, res, next){
+  debug('GET /api/gallery/:galleryID');
+  Gallery.findById(req.params.galleryID)
   .then(gallery => {
     if(gallery.userID.toString() !== req.user._id.toString())
       return next(createError(401, 'invalid user id'));
@@ -41,13 +41,13 @@ galleryRouter.post('/api/gallery', bearerAuth, jsonParser, function(req, res, ne
   .catch(next);
 });
 
-galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req, res, next){
-  debug('PUT /api/gallery/:id');
+galleryRouter.put('/api/gallery/:galleryID', bearerAuth, jsonParser, function(req, res, next){
+  debug('PUT /api/gallery/:galleryID');
   if(!req.user) return next(createError(400, 'gallery required'));
-  Gallery.findById(req.params.id)
+  Gallery.findById(req.params.galleryID)
   .then(gallery => {
     if(gallery.userID.toString() !== req.user._id.toString()) return next(createError(401, 'invalid id'));
-    return Gallery.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    return Gallery.findByIdAndUpdate(req.params.galleryID, req.body, {new: true});
   })
   .then(gallery => {
     res.json(gallery);
