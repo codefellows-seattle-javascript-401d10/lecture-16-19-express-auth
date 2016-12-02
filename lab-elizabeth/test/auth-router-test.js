@@ -1,12 +1,16 @@
 'use strict';
 
+require('./lib/test-env');
+require('./lib/aws-mock');
+
 const expect = require('chai').expect;
 const request = require('superagent');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
-const debug = require('debug')('bookstagram:auth-router-test');
 
-const User = require('../model/user');
+const serverCtrl = require('./lib/server-ctrl');
+const dbClean = require('./lib/db-clean');
+const mockUser = require('./lib/mock-user');
 
 mongoose.Promise = Promise;
 
@@ -20,49 +24,20 @@ const exampleUser = {
 
 describe('testing auth-router', function(){
 
-  before(done => {
-    debug('starting server');
-    if(!server.isRunning){
-      server.listen(process.env.PORT, () => {
-        server.isRunning = true;
-        debug('server up');
-        done();
-      });
-      return;
-    }
-    done();
-  });
+  before(done => serverCtrl.serverUp(server, done));
 
-  after(done => {
-    debug('closing server');
-    if(server.isRunning){
-      server.close(err => {
-        if(err) return done(err);
-        server.isRunning = false;
-        debug('server down');
-        done();
-      });
-      return;
-    }
-    done();
-  });
+  after(done => serverCtrl.serverDown(server, done));
+
+  afterEach(done => dbClean(done));
 
   describe('POST /api/signup', function(){
     describe('with valid body', function(){
-
-      after(done => {
-        debug('removing user');
-        User.remove({})
-        .then(() => done())
-        .catch(done);
-      });
 
       it('should return a token', done => {
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err, res) => {
           if(err) return done(err);
-          debug('res.text', res.text);
           expect(res.status).to.equal(200);
           expect(res.text).to.not.equal(true);
           done();
@@ -72,15 +47,7 @@ describe('testing auth-router', function(){
 
     describe('with invalid body', function(){
 
-      after(done => {
-        debug('removing user');
-        User.remove({})
-        .then(() => done())
-        .catch(done);
-      });
-
       afterEach(done => {
-        debug('resetting exampleUser');
         exampleUser.username = 'J.R.R.Tolkien';
         exampleUser.password = '1ring';
         exampleUser.email = 'hobbits@theshire.middleearth';
@@ -170,31 +137,13 @@ describe('testing auth-router', function(){
 
     describe('with valid body', function(){
 
-      before(done => {
-        debug('making user');
-        let user = new User(exampleUser);
-        user.generatePasswordHash(exampleUser.password)
-        .then(user => user.save())
-        .then(user => {
-          this.tempuser = user;
-          done();
-        })
-        .catch(done);
-      });
-
-      after(done => {
-        debug('removing user');
-        User.remove({})
-        .then(() => done())
-        .catch(done);
-      });
+      before(done => mockUser.call(this, done));
 
       it('should return a token', done => {
         request.get(`${url}/api/login`)
-        .auth('J.R.R.Tolkien', '1ring')
+        .auth(this.tempUser.username, this.tempPassword)
         .end((err, res) => {
           if(err) return done(err);
-          debug('res', res);
           expect(res.status).to.equal(200);
           expect(res.text).to.not.equal(true);
           done();
@@ -205,24 +154,7 @@ describe('testing auth-router', function(){
 
     describe('with invalid body', function(){
 
-      before(done => {
-        debug('making user');
-        let user = new User(exampleUser);
-        user.generatePasswordHash(exampleUser.password)
-        .then(user => user.save())
-        .then(user => {
-          this.tempuser = user;
-          done();
-        })
-        .catch(done);
-      });
-
-      after(done => {
-        debug('removing user');
-        User.remove({})
-        .then(() => done())
-        .catch(done);
-      });
+      before(done => mockUser.call(this, done));
 
       it('should return status: 401', done => {
         request.get(`${url}/api/login`)

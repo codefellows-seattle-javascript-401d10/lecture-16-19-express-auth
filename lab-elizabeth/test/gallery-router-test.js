@@ -1,22 +1,20 @@
 'use strict';
 
+require('./lib/test-env');
+require('./lib/aws-mock');
+
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
-const debug = require('debug')('bookstagram:gallery-router-test');
 
 const server = require('../server');
-const User = require('../model/user');
-const Gallery = require('../model/gallery');
+const serverCtrl = require('./lib/server-ctrl');
+const dbClean = require('./lib/db-clean');
+const mockUser = require('./lib/mock-user');
+const mockGallery = require('./lib/mock-gallery');
 
 const url = `http://localhost:${process.env.PORT}`;
-
-const exampleUser = {
-  username: 'J.R.R.Tolkien',
-  password: '1ring',
-  email: 'hobbits@theshire.middleearth',
-};
 
 const exampleGallery = {
   name: 'That trip to Mordor',
@@ -32,62 +30,17 @@ mongoose.Promise = Promise;
 
 describe('testing gallery-router', function(){
 
-  before(done => {
-    debug('starting server');
-    if(!server.isRunning){
-      server.listen(process.env.PORT, () => {
-        server.isRunning = true;
-        debug('server up');
-        done();
-      });
-      return;
-    }
-    done();
-  });
+  before(done => serverCtrl.serverUp(server, done));
 
-  after(done => {
-    debug('closing server');
-    if(server.isRunning){
-      server.close(err => {
-        if(err) return done(err);
-        server.isRunning = false;
-        debug('server down');
-        done();
-      });
-      return;
-    }
-    done();
-  });
+  after(done => serverCtrl.serverDown(server, done));
 
-  afterEach(done => {
-    debug('removing users/galleries');
-    Promise.all([
-      User.remove({}),
-      Gallery.remove({}),
-    ])
-    .then(() => done())
-    .catch(done);
-  });
+  afterEach(done => dbClean(done));
 
   describe('POST /api/gallery', () => {
 
-    before(done => {
-      debug('create user');
-      new User(exampleUser)
-      .generatePasswordHash(exampleUser.password)
-      .then(user => user.save())
-      .then(user => {
-        this.tempUser = user;
-        return user.generateToken();
-      })
-      .then(token => {
-        this.tempToken = token;
-        done();
-      })
-      .catch(done);
-    });
-
     describe('with valid gallery and user token', () => {
+
+      before(done => mockUser.call(this, done));
 
       it('should return a gallery', done => {
         request.post(`${url}/api/gallery`)
@@ -108,6 +61,8 @@ describe('testing gallery-router', function(){
     });
 
     describe('with invalid gallery or user token', () => {
+
+      before(done => mockUser.call(this, done));
 
       it('should return status: 401', done => {
         request.post(`${url}/api/gallery`)
@@ -145,44 +100,13 @@ describe('testing gallery-router', function(){
         });
       });
     });
-
-
   });
 
   describe('GET /api/gallery/:id', () => {
 
-    before(done => {
-      debug('create user');
-      new User(exampleUser)
-      .generatePasswordHash(exampleUser.password)
-      .then(user => user.save())
-      .then(user => {
-        this.tempUser = user;
-        return user.generateToken();
-      })
-      .then(token => {
-        this.tempToken = token;
-        done();
-      })
-      .catch(done);
-    });
-
-    before(done => {
-      debug('create gallery');
-      exampleGallery.userID = this.tempUser._id.toString();
-      new Gallery(exampleGallery).save()
-      .then(gallery => {
-        this.tempGallery = gallery;
-        done();
-      })
-      .catch(done);
-    });
-
-    after(() => {
-      delete exampleGallery.userID;
-    });
-
     describe('with valid user token and galleryID', () => {
+
+      before(done => mockGallery.call(this, done));
 
       it('should return a gallery', done => {
         request.get(`${url}/api/gallery/${this.tempGallery._id}`)
@@ -202,6 +126,8 @@ describe('testing gallery-router', function(){
     });
 
     describe('with invalid user token or galleryID', () => {
+
+      before(done => mockGallery.call(this, done));
 
       it('should return status: 404', done => {
         request.get(`${url}/api/gallery/`)
@@ -230,38 +156,9 @@ describe('testing gallery-router', function(){
 
   describe('PUT /api/gallery/:id', () => {
 
-    before(done => {
-      debug('create user');
-      new User(exampleUser)
-      .generatePasswordHash(exampleUser.password)
-      .then(user => user.save())
-      .then(user => {
-        this.tempUser = user;
-        return user.generateToken();
-      })
-      .then(token => {
-        this.tempToken = token;
-        done();
-      })
-      .catch(done);
-    });
-
-    before(done => {
-      debug('create gallery');
-      exampleGallery.userID = this.tempUser._id.toString();
-      new Gallery(exampleGallery).save()
-      .then(gallery => {
-        this.tempGallery = gallery;
-        done();
-      })
-      .catch(done);
-    });
-
-    after(() => {
-      delete exampleGallery.userID;
-    });
-
     describe('with valid user token and galleryID', () => {
+
+      before(done => mockGallery.call(this, done));
 
       it('should return a gallery', done => {
         request.put(`${url}/api/gallery/${this.tempGallery._id}`)
@@ -280,6 +177,8 @@ describe('testing gallery-router', function(){
     });
 
     describe('with invalid user token or galleryID', () => {
+
+      before(done => mockGallery.call(this, done));
 
       it('should return status: 404', done => {
         request.put(`${url}/api/gallery/`)
@@ -317,6 +216,5 @@ describe('testing gallery-router', function(){
         });
       });
     });
-
   });
 });

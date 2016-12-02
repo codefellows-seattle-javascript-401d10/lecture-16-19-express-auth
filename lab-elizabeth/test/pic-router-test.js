@@ -1,32 +1,23 @@
 'use strict';
 
-// node modules
-const fs = require('fs');
+// mock third party services
+require('./lib/test-env');
+const awsMock = require('./lib/aws-mock');
 
 // npm modules
 const expect = require('chai').expect;
-const debug = require('debug')('bookstagram:pic-router-test');
+const request = require('superagent');
+// const debug = require('debug')('bookstagram:pic-router-test');
 
 // app modules
-const User = require('../model/user');
-const Gallery = require('../model/gallery');
-// const formRequest = require('./lib/form-request');
-const request = require('superagent');
+const serverCtrl = require('./lib/server-ctrl');
+const dbClean = require('./lib/db-clean');
+// const mockPic = require('./lib/mock-pic');
+const mockGallery = require('./lib/mock-gallery');
 
 // module constants
 const server = require('../server');
 const url = `http://localhost:${process.env.PORT}`;
-
-const exampleUser = {
-  username: 'J.R.R.Tolkien',
-  password: '1ring',
-  email: 'hobbits@theshire.middleearth',
-};
-
-const exampleGallery = {
-  name: 'That trip to Mordor',
-  desc: 'the eagles said they would meet us, they were late',
-};
 
 const examplePic = {
   name: 'map',
@@ -36,76 +27,17 @@ const examplePic = {
 
 describe('testing pic-router', function(){
 
-  before(done => {
-    if(!server.isRunning){
-      server.listen(process.env.PORT, () => {
-        server.isRunning = true;
-        debug('server up');
-        done();
-      });
-      return;
-    }
-    done();
-  });
+  before(done => serverCtrl.serverUp(server, done));
 
-  after(done => {
-    if(server.isRunning){
-      server.close(err => {
-        if(err) return done(err);
-        server.isRunning = false;
-        debug('server down');
-        done();
-      });
-      return;
-    }
-    done();
-  });
+  after(done => serverCtrl.serverDown(server, done));
 
-  afterEach(done => {
-    debug('clean up database');
-    Promise.all([
-      User.remove({}),
-      Gallery.remove({}),
-    ])
-    .then(() => done())
-    .catch(done);
-  });
+  afterEach(done => dbClean(done));
 
   describe('POST /api/gallery/:id/pic', function(){
 
     describe('with valid token and data', function(){
 
-      before(done => {
-        debug('create user');
-        new User(exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then(user => user.save())
-        .then(user => {
-          this.tempUser = user;
-          return user.generateToken();
-        })
-        .then(token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
-      });
-
-      after(() => {
-        debug('clean up userID from exampleGallery');
-        delete exampleGallery.userID;
-      });
-
-      before(done => {
-        debug('create gallery');
-        exampleGallery.userID = this.tempUser._id.toString();
-        new Gallery(exampleGallery).save()
-        .then(gallery => {
-          this.tempGallery = gallery;
-          done();
-        })
-        .catch(done);
-      });
+      before(done => mockGallery.call(this, done));
 
       it('should return a pic', done => {
         request.post(`${url}/api/gallery/${this.tempGallery._id}/pic`)
@@ -113,17 +45,16 @@ describe('testing pic-router', function(){
         .field('name', examplePic.name)
         .field('desc', examplePic.desc)
         .attach('image', examplePic.image)
-        .then(res => {
-          console.log(res.body);
-          expect(res.statusCode).to.equal(200);
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(200);
           expect(res.body.name).to.equal(examplePic.name);
           expect(res.body.desc).to.equal(examplePic.desc);
           expect(res.body.galleryID).to.equal(this.tempGallery._id.toString());
+          expect(res.body.imageURI).to.equal(awsMock.uploadMock.Location);
           done();
-        })
-        .catch(done);
+        });
       });
-
     });
 
   });
