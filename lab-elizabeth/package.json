@@ -1,0 +1,51 @@
+{
+  "name": "lab-elizabeth",
+  "version": "1.0.0",
+  "description": "lab-16-19-express-auth",
+  "main": "server.js",
+  "scripts": {
+    "test": "DEBUG='book*' ./node_modules/mocha/bin/mocha",
+    "start": "DEBUG='book*' node server.js",
+    "lint": "./node_modules/eslint/bin/eslint.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tenlia/lecture-16-19-express-auth.git"
+  },
+  "author": "tenlia@hotmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Tenlia/lecture-16-19-express-auth/issues"
+  },
+  "homepage": "https://github.com/Tenlia/lecture-16-19-express-auth#readme",
+  "dependencies": {
+    "aws-sdk": "^2.6.6",
+    "bcrypt": "^0.8.7",
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "crypto": "0.0.3",
+    "debug": "^2.3.0",
+    "dotenv": "^2.0.0",
+    "env": "0.0.2",
+    "express": "^4.14.0",
+    "http-errors": "^1.5.0",
+    "jsonwebtoken": "^7.1.9",
+    "mongoose": "^4.6.6",
+    "morgan": "^1.7.0",
+    "multer": "^1.2.0"
+  },
+  "devDependencies": {
+    "aws-sdk-mock": "^1.6.1",
+    "chai": "^3.5.0",
+    "eslint": "^3.7.1",
+    "form-data": "^2.1.1",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-mocha": "^3.0.1",
+    "lorem-ipsum": "^1.0.3",
+    "mocha": "^3.1.0",
+    "mocha-eslint": "^3.0.1",
+    "superagent": "^2.3.0"
+  }
+}
